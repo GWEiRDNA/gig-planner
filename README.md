@@ -11,3 +11,6 @@ DB Tables draft:
 - Sheet Music
 - Midi files/MP3
 - Transition Graph
+- Tag Groups
+- Events (For creating setlists for exact dates)
+- Config
