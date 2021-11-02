@@ -1,0 +1,73 @@
+# gig-planner
+- Songs
+    - ID
+    - Title
+    - Album
+    - Date of Release
+    - BPM
+    - Lyrics
+    - Sheet Music
+    - Midi Files
+    - MP3
+    - Length (Min:Secs)
+- Authors
+    - ID
+    - Name
+- Authors - Songs
+    - ID_Song
+    - ID_Author
+- Tags
+    - ID
+    - Name
+    - ID_Tag_Group
+- Song-Tags
+    - ID_Tag
+    - ID_Song
+- Tag-Groups
+    - ID
+    - Name
+    - Color
+- Transition Graph
+    - ID_A
+    - ID_B
+    - Power (INTEGER)
+    - Created Manually (BOOL)
+- Events
+    - ID
+    - Author
+    - Name
+    - Start Date (optional)
+    - ID_playlist (non optional)
+    - End Date (optional)
+    - Description (text - optional)
+- Sets
+    - ID
+    - Name (optional)
+    - Color (optional)
+- Sets - Songs
+    - ID_Set
+    - ID_Song
+    - Order ()
+- Playlist
+    - ID
+- Playlist-List
+    - ID_Playlist
+    - ID_Song/Set/Pause - One or Another WOOOW
+    - Order
+- Users
+    - ID
+    - Email
+    - Password (HASH)
+- Roles
+    - ID
+    - Name
+- Roles_Permissions
+    - ID_Role
+    - ID_Permissions
+- Permissions
+    - ID
+    - Name
+- Users_Permissions_Events
+    - ID_User
+    - ID_Permissions
+    - ID_Events
