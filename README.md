@@ -5,4 +5,4 @@ Logical diagram:
 ![Logical diagram.png](https://github.com/GWEiRDNA/gig-planner/blob/main/Logical%20diagram.png?raw=true)
 
 Relational diagram:
-![Logical diagram.png](https://github.com/GWEiRDNA/gig-planner/blob/main/Relational%20diagram.png?raw=true)
+![Relational diagram.png](https://github.com/GWEiRDNA/gig-planner/blob/main/Relational%20diagram.png?raw=true)
