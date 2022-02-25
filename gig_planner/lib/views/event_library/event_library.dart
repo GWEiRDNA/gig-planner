@@ -15,18 +15,24 @@ class EventLibrary extends StatefulWidget {
 }
 
 class _EventLibraryState extends State<EventLibrary> {
+  refresh(){
+    setState((){});
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        leading: IconButton(onPressed: () {Navigator.pop(context);}, icon: Icon(Icons.arrow_back)),
+        leading: IconButton(onPressed: () {
+          Navigator.pop(context);
+        }, icon: Icon(Icons.arrow_back)),
         title: const Text("All Events"),
       ),
       body: ListView.builder(
-          itemCount: widget.eventIds.length,
-          itemBuilder: (context, i){
-            return EventTile(ctl: widget.ctl, eventId: widget.eventIds[i]);
-          }
+        itemCount: widget.eventIds.length,
+        itemBuilder: (context, i) {
+          return EventTile(ctl: widget.ctl, eventId: widget.eventIds[i], notifyParent: refresh);
+        }
         ,
       ),
     );
@@ -36,7 +42,8 @@ class _EventLibraryState extends State<EventLibrary> {
 class EventTile extends StatefulWidget {
   final String eventId;
   final Controller ctl;
-  const EventTile({required this.ctl, required this.eventId, Key? key}) : super(key: key);
+  final Function() notifyParent;
+  const EventTile({required this.ctl, required this.eventId, required this.notifyParent, Key? key}) : super(key: key);
 
   @override
   State<EventTile> createState() => _EventTileState();
@@ -45,14 +52,23 @@ class EventTile extends StatefulWidget {
 class _EventTileState extends State<EventTile> {
   @override
   Widget build(BuildContext context) {
+    String eventName = widget.ctl.getEventName(widget.eventId);
+
     return ListTile(
-      title: Text(widget.ctl.getEventName(widget.eventId)),
+      title: Text(eventName),
       trailing: IconButton(onPressed: (){}, icon: const Icon(Icons.delete)),
-      onTap: () {Navigator.push(
-        context, MaterialPageRoute(
-          builder:  (_) => Playlist(ctl: widget.ctl, eventId: widget.eventId),
-        )
-      );},
+      onTap: () {
+        if(widget.ctl.eventAvailable(widget.eventId)){
+          Navigator.push(
+              context, MaterialPageRoute(
+            builder:  (_) => Playlist(ctl: widget.ctl, eventId: widget.eventId),
+          )
+          );
+        }else{
+          Scaffold.of(context).showSnackBar(const SnackBar(content: Text("You don't have access to this event anymore")));
+          widget.notifyParent();
+        }
+      },
     );
   }
 }

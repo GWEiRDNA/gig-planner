@@ -9,12 +9,21 @@ class Controller{
   Controller(this.user);
 
   //Events
-  List<String> getEventNames(){
-    List<String> eventNames = [];
+  bool eventAvailable(String eventId){
     for(EventModel e in user.events){
-      eventNames.add(e.name);
+      if(e.id == eventId){
+        return true;
+      }
     }
-    return eventNames;
+    return false;
+  }
+
+  List<String> getEventsIds(){
+    List<String> eventIds = [];
+    for(EventModel e in user.events){
+      eventIds.add(e.id);
+    }
+    return eventIds;
   }
 
   String getEventName(String eventId){
@@ -23,10 +32,17 @@ class Controller{
         return e.name;
       }
     }
+    //This doesn't happen
+    return "";
   }
 
   String getEventPermissions(String eventId){
     return "w";
+  }
+
+  PlaylistModel? getEventPlaylistModel(String eventId){
+    EventModel event = user.events.firstWhere((e) => e.id == eventId);
+    return event.playlist;
   }
 
   bool canReadEvent(String eventId){
@@ -44,14 +60,6 @@ class Controller{
           return false;
       }
     }
-  }
-
-  //- Playlist
-  PlaylistModel getEventsPlaylist(String eventId){
-    if(canReadEvent(eventId)){
-      return
-    }
-    return ;
   }
 
 }
