@@ -40,11 +40,11 @@ class MyApp extends StatelessWidget {
           ListTile(
             title: Text(fields[0]),
             onTap: () {
-              List<String> ids = ctl.getAvailableEventsIds();
+              List<String> names = ctl.getEventNames();
               Navigator.push(
                 context,
                 MaterialPageRoute(
-                  builder: (context) => EventLibrary(eventIds: ids),
+                  builder: (context) => EventLibrary(ctl: ctl, eventNames: names),
                 )
               );
             }

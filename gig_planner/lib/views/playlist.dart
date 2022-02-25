@@ -1,10 +1,16 @@
 import 'package:flutter/material.dart';
+import 'package:gig_planner_sketch/controllers/controller.dart';
+import '../models/playlist_model.dart';
 import 'song_library/song.dart';
 import 'set_library/set.dart';
 
 class Playlist extends StatefulWidget {
-
-  const Playlist({Key? key}) : super(key: key);
+  final Controller ctl;
+  final String eventId;
+  final PlaylistModel? playlist;
+  const Playlist({required this.ctl, required this.eventId, Key? key}) : super(key: key){
+    playlist = ctl.getEventsPlaylist(eventId);
+  }
 
   @override
   _PlaylistState createState() => _PlaylistState();

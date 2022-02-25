@@ -1,10 +1,10 @@
 {
     "logs": [
         {
-            "outputFile": "/home/andrew/Documents/gig_planner_sketch/build/app/intermediates/incremental/mergeDebugResources/merged.dir/values-night-v8/values-night-v8.xml",
+            "outputFile": "/home/andrew/Documents/gig-planner/gig_planner/build/app/intermediates/incremental/mergeDebugResources/merged.dir/values-night-v8/values-night-v8.xml",
             "map": [
                 {
-                    "source": "/home/andrew/Documents/gig_planner_sketch/android/app/src/main/res/values-night/styles.xml",
+                    "source": "/home/andrew/Documents/gig-planner/gig_planner/android/app/src/main/res/values-night/styles.xml",
                     "from": {
                         "startLines": "3,14",
                         "startColumns": "4,4",
