@@ -1,15 +1,18 @@
 import 'package:flutter/material.dart';
 
+import '../../controllers/controller.dart';
+import '../../models/set_model.dart';
+
 class Set extends StatefulWidget {
-  const Set({Key? key}) : super(key: key);
+  final Controller ctl;
+  final SetModel set;
+  const Set({required this.ctl, required this.set, Key? key}) : super(key: key);
 
   @override
   State<Set> createState() => _SetState();
 }
 
 class _SetState extends State<Set> {
-  final String setTitle = "Title of the set";
-
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -25,9 +28,10 @@ class _SetState extends State<Set> {
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  Text(
-                    setTitle,
-                  ),
+                  if(widget.set.name != null)
+                    Text(widget.set.name!)
+                  else
+                    const Text("Set"),
                   Row(children: [
                     IconButton(onPressed: () {}, icon: const Icon(Icons.edit)),
                     IconButton(onPressed: () {}, icon: const Icon(Icons.expand_more)),

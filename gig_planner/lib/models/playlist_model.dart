@@ -18,9 +18,16 @@ class PlaylistModel{
 }
 
 class PlaylistElementModel{
-  dynamic element;
-  Bool? played;
+  String _id;
+  dynamic _element;
+  bool? _played;
 
-  PlaylistElementModel.song(SongModel this.element, this.played);
-  PlaylistElementModel.set(SetModel this.element, this.played);
+  PlaylistElementModel.song({required SongModel song, bool? played = false}) : _id = song.id, _element = song, _played = played;
+  PlaylistElementModel.set({required SetModel set, bool? played = false}) : _id = set.id, _element = set, _played = played;
+
+  String get id => _id;
+
+  bool? get played => _played;
+
+  dynamic get element => _element;
 }

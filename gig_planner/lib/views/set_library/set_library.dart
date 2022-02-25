@@ -1,17 +1,34 @@
 import 'package:flutter/material.dart';
+import '../../controllers/controller.dart';
+import '../../models/set_model.dart';
 import 'set.dart';
 
-class SetLibrary extends StatelessWidget {
-  const SetLibrary({Key? key}) : super(key: key);
+class SetLibrary extends StatefulWidget {
+  final Controller ctl;
+  List<SetModel> sets;
+  SetLibrary({required Controller this.ctl, Key? key}) : sets = ctl.user.sets ,super(key: key);
 
+  @override
+  State<SetLibrary> createState() => _SetLibraryState();
+}
+
+class _SetLibraryState extends State<SetLibrary> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         title: const Text("Set Library"),
-        leading: IconButton(onPressed: (){Navigator.pop(context);}, icon: const Icon(Icons.arrow_back)),
+        leading: IconButton(
+            onPressed: (){Navigator.pop(context);},
+            icon: const Icon(Icons.arrow_back)
+        ),
       ),
-      body: Column(children: const [Set(), Set()]),
+      body: ListView.builder(
+        itemCount: widget.sets.length,
+        itemBuilder: (context, i){
+          return Set(ctl: widget.ctl, set: widget.sets[i]);
+        },
+      ),
     );
   }
 }

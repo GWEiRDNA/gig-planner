@@ -8,9 +8,11 @@ import 'set_library/set.dart';
 class Playlist extends StatefulWidget {
   final Controller ctl;
   final String eventId;
+  late final String eventName;
   PlaylistModel? playlist;
   Playlist({required this.ctl, required this.eventId, Key? key}) : super(key: key){
     this.playlist = ctl.getEventPlaylistModel(eventId);
+    this.eventName = ctl.getEventName(eventId);
   }
 
   @override
@@ -23,16 +25,16 @@ class _PlaylistState extends State<Playlist> {
     if(widget.playlist != null){
       return Scaffold(
         appBar: AppBar(
-          title: const Text("Event nr 2"),
+          title: Text(widget.eventName),
         ),
         body: ListView.builder(
           itemCount: widget.playlist?.playlistElements.length,
           itemBuilder: (context, i) {
             if(widget.playlist?.playlistElements[i] is SongModel){
-              return Song();
+              return Song(ctl: widget.ctl, song: widget.playlist!.playlistElements[i] as SongModel);
             }
             else{
-              return Set();
+              return Set(ctl: widget.ctl, set: widget.playlist!.playlistElements[i] as SetModel);
             }
           },
         ),
@@ -40,6 +42,5 @@ class _PlaylistState extends State<Playlist> {
     }else{
       return const Text("Hello");
     }
-
   }
 }

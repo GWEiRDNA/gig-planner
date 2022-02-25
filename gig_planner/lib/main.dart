@@ -40,11 +40,10 @@ class MyApp extends StatelessWidget {
           ListTile(
             title: Text(fields[0]),
             onTap: () {
-              List<String> ids = ctl.getEventsIds();
               Navigator.push(
                 context,
                 MaterialPageRoute(
-                  builder: (context) => EventLibrary(ctl: ctl, eventIds: ids),
+                  builder: (context) => EventLibrary(ctl: ctl),
                 )
               );
             }
@@ -56,7 +55,7 @@ class MyApp extends StatelessWidget {
                 Navigator.push(
                     context,
                     MaterialPageRoute(
-                      builder: (_) => const SongLibrary(),
+                      builder: (_) => SongLibrary(ctl: ctl),
                     ));
               }),
           const Divider(),
@@ -66,7 +65,7 @@ class MyApp extends StatelessWidget {
                 Navigator.push(
                     context,
                     MaterialPageRoute(
-                      builder: (_) => const SetLibrary(),
+                      builder: (_) => SetLibrary(ctl: ctl),
                     ));
               }),
           const Divider(),
@@ -75,7 +74,7 @@ class MyApp extends StatelessWidget {
             onTap: () {
               Navigator.push(
                 context, MaterialPageRoute(
-                builder: (_) => Tags(),
+                builder: (_) => Tags(ctl: ctl),
               )
               );
             }
@@ -85,7 +84,7 @@ class MyApp extends StatelessWidget {
             title: Text(fields[4]),
             onTap: () {
               Navigator.push(
-                context, MaterialPageRoute(builder: (_) => Transitions())
+                context, MaterialPageRoute(builder: (_) => Transitions(ctl: ctl))
               );
             }
           ),
@@ -94,26 +93,26 @@ class MyApp extends StatelessWidget {
             title: Text(fields[5]),
           ),
           const Divider(),
-          ListTile(
-              title: Text('execute myquery'),
-              onTap: () async {
-                //connect to database
-                ConnectionParameters connectionParameters = ConnectionParameters("10.0.2.2", 5432, "test4", "postgres", "root");
-                PostgreSQLConnection connection = await connectToDatabase(connectionParameters);
-
-                //execute query
-                int idmax = 30; //query argument nr 1
-                String name = 'user A'; //query argument nr 2
-                List<Map<String, Map<String, dynamic>>> results = await executeQuery(connection, myquery, {'@idmax': idmax, '@name': name});
-
-                //get results
-                print('results : ' + results.length.toString()); //row count
-                for (final row in results) {
-                  print(row);
-                  print(row['users']!['id'].toString() + ' : ' + row['users']!['name']); //extract values from row
-                }
-              }
-          ),
+          // ListTile(
+          //     title: Text('execute myquery'),
+          //     onTap: () async {
+          //       //connect to database
+          //       ConnectionParameters connectionParameters = ConnectionParameters("10.0.2.2", 5432, "test4", "postgres", "root");
+          //       PostgreSQLConnection connection = await connectToDatabase(connectionParameters);
+          //
+          //       //execute query
+          //       int idmax = 30; //query argument nr 1
+          //       String name = 'user A'; //query argument nr 2
+          //       List<Map<String, Map<String, dynamic>>> results = await executeQuery(connection, myquery, {'@idmax': idmax, '@name': name});
+          //
+          //       //get results
+          //       print('results : ' + results.length.toString()); //row count
+          //       for (final row in results) {
+          //         print(row);
+          //         print(row['users']!['id'].toString() + ' : ' + row['users']!['name']); //extract values from row
+          //       }
+          //     }
+          // ),
         ],
       ),
     );
@@ -124,6 +123,6 @@ class MyApp extends StatelessWidget {
 //  : 1. - 3 Basic Widgets and making your basic widgets after
 //  : 2. - 5 Scrollable Widgets and making few Lists out of your basic widgets
 //  TODO: 3. - 6 Interactive Widgets and making your Interactive Widgets
-//  TODO: 4. - 7 Routes and Navigation. And making your own navigation
+//   4. - 7 Routes and Navigation. And making your own navigation
 //  TODO: 5. - 13 States Management
 //  TODO: 6. - 15 Saving data with SQLite

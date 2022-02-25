@@ -1,14 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:gig_planner_sketch/controllers/controller.dart';
+import '../../models/event_model.dart';
 import 'event.dart';
 import '../playlist.dart';
 
 final List<String> exampleTitles = ["Karnawał", "Jaś i Małgosia kwiecień", "Jan i Joanna"];
 
 class EventLibrary extends StatefulWidget {
-  final List<String> eventIds;
+  List<EventModel> events;
   final Controller ctl;
-  const EventLibrary({required this.ctl, required List<String> this.eventIds, Key? key}) : super(key: key);
+  EventLibrary({required this.ctl, Key? key}) : events = ctl.user.events, super(key: key);
 
   @override
   State<EventLibrary> createState() => _EventLibraryState();
@@ -29,9 +30,9 @@ class _EventLibraryState extends State<EventLibrary> {
         title: const Text("All Events"),
       ),
       body: ListView.builder(
-        itemCount: widget.eventIds.length,
+        itemCount: widget.events.length,
         itemBuilder: (context, i) {
-          return EventTile(ctl: widget.ctl, eventId: widget.eventIds[i], notifyParent: refresh);
+          return EventTile(ctl: widget.ctl, eventId: widget.events[i].id, notifyParent: refresh);
         }
         ,
       ),

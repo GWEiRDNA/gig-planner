@@ -30,16 +30,17 @@ class UserModel {
       : _id = id,
         _eMail = eMail,
         _nick = nick {
-    _tags.add(TagModel(id: "T1", name: "Slow", userId: "U1"));
-    _tags.add(TagModel(id: "T2", name: "Fast", userId: "U1"));
+    _tags.add(TagModel(id: "T1", name: "Slow", userId: "U1", tagGroupId: "TG1"));
+    _tags.add(TagModel(id: "T2", name: "Fast", userId: "U1", tagGroupId: "TG1"));
+    _tags.add(TagModel(id: "T3", name: "TODO", userId: "U1"));
     _songs.add(
         SongModel(id: "S1", title: "Knocking on Heavens door", ownerId: "U1"));
     _songs.add(SongModel(id: "S2", title: "Mambo No. 5", ownerId: "U1"));
     _songs.add(SongModel(id: "S3", title: "Stairway to Heaven", ownerId: "U1"));
     _sets.add(SetModel(id: "S1", userId: "U1"));
     _playlists.add(PlaylistModel("P1", "U1"));
-    _events.add(EventModel(id: 'E1', name: "New Year", permissions: "owner"));
-    _tagGroups.add(TagGroupModel(id: "TG1", userId: "U1", name: "Genre"));
+    _events.add(EventModel(id: 'E1', name: "New Year", permissions: "owner", playlist: _playlists.first));
+    _tagGroups.add(TagGroupModel(id: "TG1", userId: "U1", name: "Tempo"));
   }
 
   //TODO: Refresh

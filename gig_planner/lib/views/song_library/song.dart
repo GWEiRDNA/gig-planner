@@ -1,7 +1,12 @@
 import 'package:flutter/material.dart';
 
+import '../../controllers/controller.dart';
+import '../../models/song_model.dart';
+
 class Song extends StatefulWidget {
-  const Song({Key? key}) : super(key: key);
+  Controller ctl;
+  SongModel song;
+  Song({required Controller this.ctl, required SongModel this.song, Key? key}) : super(key: key);
 
   @override
   State<Song> createState() => _SongState();
@@ -25,7 +30,7 @@ class _SongState extends State<Song> {
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                const Text("Title of the song"),
+                Text(widget.song.title),
                 Padding(
                   padding: const EdgeInsets.only(bottom: 8.0),
                   child: Row(
@@ -54,18 +59,21 @@ class _SongState extends State<Song> {
                     Text('Chords'),
                   ]),
             ),
-            const Padding(
+            Padding(
               padding: EdgeInsets.only(bottom: 8.0),
-              child: Text('Artist'),
+              child: Text(widget.song.getAuthors()),
             ),
             Padding(
               padding: const EdgeInsets.only(bottom: 8.0),
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: const [
-                  Text("140 BPM"),
-                  Text("Duration: 5:14 min"),
-                  Text("Released: 1968"),
+                children: [
+                  if(widget.song.bpm != null)
+                    Text(widget.song.bpm.toString()),
+                  if(widget.song.duration != null)
+                    Text(widget.song.duration.toString()),
+                  if(widget.song.yearOfRelease != null)
+                    Text("Released: ${widget.song.yearOfRelease}"),
                 ],
               ),
             )

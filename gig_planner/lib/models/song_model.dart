@@ -25,4 +25,8 @@ class SongModel {
     this.authorIds,
     this.tagIds,
   });
+
+  String getAuthors(){
+    return "Hello";
+  }
 }

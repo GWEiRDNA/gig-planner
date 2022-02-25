@@ -62,4 +62,11 @@ class Controller{
     }
   }
 
+  getSong(String songId) {
+    user.songs.firstWhere((song) => song.id == songId);
+  }
+
+  getTransitions(){
+    return <TransitionModel>[TransitionModel(user.songs.first, user.songs.elementAt(2), 30, false)];
+  }
 }
