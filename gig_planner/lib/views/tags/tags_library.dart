@@ -25,9 +25,7 @@ class _TagsState extends State<Tags> {
         title: const Text("Your tags"),
       ),
       body: ListView.builder(
-        itemCount: widget.tags.any((tag) => tag.tagGroupId == null)
-            ? widget.tagGroups.length + 1
-            : widget.tagGroups.length,
+        itemCount: widget.tagGroups.length + 1,
         itemBuilder: (context, i) {
           if (i >= widget.tagGroups.length) {
             return TagGroup.others(ctl: widget.ctl);
@@ -80,6 +78,8 @@ class TagGroup extends StatefulWidget {
 }
 
 class _TagGroupState extends State<TagGroup> {
+  String newTagName = "";
+
   @override
   Widget build(BuildContext context) {
     return Padding(
@@ -107,16 +107,29 @@ class _TagGroupState extends State<TagGroup> {
             }
           }())
         ),
+        ListTile(
+          title: TextFormField(
+            decoration: const InputDecoration(hintText: "Add new tag"),
+            onChanged: (input){
+              setState(() {
+                newTagName = input;
+              });
+            },
+          ),
+          trailing:
+          IconButton(onPressed: () {
+            if(widget.tagGroup != null){
+              widget.ctl.createNewTag(newTagName, widget.tagGroup!.id);
+            }else{
+              widget.ctl.createNewTag(newTagName, null);
+            }
+            setState((){});
+          }, icon: const Icon(Icons.add)),
+        ),
+        if(widget.tags.isNotEmpty)
         Wrap(
           spacing: 5,
           children: [
-            ListTile(
-              title: TextFormField(
-                decoration: const InputDecoration(hintText: "Add new tag"),
-              ),
-              trailing:
-                  IconButton(onPressed: () {}, icon: const Icon(Icons.add)),
-            ),
             for (TagModel tag in widget.tags) Tag(ctl: widget.ctl, tag: tag),
           ],
         )
@@ -139,7 +152,9 @@ class _TagState extends State<Tag> {
   Widget build(BuildContext context) {
     return Chip(
       label: Text(widget.tag.name),
-      onDeleted: () {},
+      onDeleted: () {
+        widget.ctl.deleteTag(widget.tag.id);
+      },
       deleteIcon: const Icon(Icons.close),
     );
   }

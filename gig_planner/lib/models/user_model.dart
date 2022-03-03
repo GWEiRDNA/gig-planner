@@ -38,6 +38,9 @@ class UserModel {
     _songs.add(SongModel(id: "S2", title: "Mambo No. 5", ownerId: "U1", bpm: 120, album: "Mambo, Mambo"));
     _songs.add(SongModel(id: "S3", title: "Stairway to Heaven", ownerId: "U1", duration: "6:15", yearOfRelease: 1969));
     _sets.add(SetModel(id: "S1", userId: "U1"));
+    _sets[0].songs.add(_songs[0]);
+    _sets[0].songs.add(_songs[1]);
+    _sets[0].songs.add(_songs[2]);
     _playlists.add(PlaylistModel("P1", "U1"));
     _events.add(EventModel(id: 'E1', name: "New Year", permissions: "owner", playlist: _playlists.first));
     _tagGroups.add(TagGroupModel(id: "TG1", userId: "U1", name: "Tempo"));

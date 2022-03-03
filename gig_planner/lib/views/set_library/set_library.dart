@@ -15,6 +15,7 @@ class SetLibrary extends StatefulWidget {
 class _SetLibraryState extends State<SetLibrary> {
   @override
   Widget build(BuildContext context) {
+    List<SetModel> sets = widget.ctl.user.sets;
     return Scaffold(
       appBar: AppBar(
         title: const Text("Set Library"),
@@ -24,10 +25,18 @@ class _SetLibraryState extends State<SetLibrary> {
         ),
       ),
       body: ListView.builder(
-        itemCount: widget.sets.length,
+        itemCount: sets.length,
         itemBuilder: (context, i){
-          return Set(ctl: widget.ctl, set: widget.sets[i]);
+          return Set(ctl: widget.ctl, set: sets[i]);
         },
+      ),
+      floatingActionButton: FloatingActionButton(
+        child: const Icon(Icons.add),
+        onPressed: () {
+          widget.ctl.createSet();
+          setState((){});
+        },
+        backgroundColor: Colors.blue,
       ),
     );
   }

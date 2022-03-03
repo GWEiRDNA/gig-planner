@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:flutter/material.dart';
 import 'package:gig_planner_sketch/models/models.dart';
 import '../../controllers/controller.dart';
@@ -127,10 +129,110 @@ class _SongFormState extends State<SongForm> {
                 if(ctl.newSong()) {
                   Navigator.pop(context);
                 }
-            }, icon: const Icon(Icons.check))
+            }, icon: const Icon(Icons.check)),
+            TagsView(ctl: ctl),
           ],
       ),
         )),
     );
   }
 }
+
+
+class TagsView extends StatefulWidget {
+  Controller ctl;
+  TagsView({required this.ctl, Key? key}) : super(key: key);
+
+  @override
+  _TagsViewState createState() => _TagsViewState();
+}
+
+class _TagsViewState extends State<TagsView> {
+  List<TagGroupModel> tagGroups = [];
+
+  @override
+  Widget build(BuildContext context) {
+    tagGroups = widget.ctl.user.tagGroups;
+    return ListView.builder(
+      shrinkWrap: true,
+      itemCount: tagGroups.length + 1,
+      itemBuilder: (context, i) {
+        if(i == tagGroups.length) {
+          return TagGroupView.others(ctl: widget.ctl);
+        }
+        return TagGroupView(ctl: widget.ctl, tg: tagGroups[i]);
+      },
+    );
+  }
+}
+
+class TagGroupView extends StatefulWidget {
+  Controller ctl;
+  TagGroupModel? tg;
+  TagGroupView({required this.ctl, required this.tg, Key? key}) : super(key: key);
+  TagGroupView.others({required this.ctl, Key? key}) :super(key: key);
+
+  @override
+  _TagGroupViewState createState() => _TagGroupViewState();
+}
+
+class _TagGroupViewState extends State<TagGroupView> {
+  @override
+  List<TagModel> tags = [];
+
+  Widget build(BuildContext context) {
+    if(widget.tg != null) {
+      for (TagModel tag in widget.ctl.user.tags) {
+        if (tag.tagGroupId == widget.tg!.id) {
+          tags.add(tag);
+        }
+      }
+    }else{
+      for (TagModel tag in widget.ctl.user.tags) {
+        if (tag.tagGroupId == null) {
+          tags.add(tag);
+        }
+      }
+    }
+    return Column(
+      children: [
+        widget.tg != null ? Text(widget.tg!.name) : const Text("Others"),
+        Wrap(
+          children: [
+            for (TagModel tag in tags) TagView(ctl: widget.ctl, tag: tag),
+          ],
+        ),
+      ],
+    );
+  }
+}
+
+class TagView extends StatefulWidget {
+  Controller ctl;
+  TagModel tag;
+  TagView({required this.ctl, required this.tag, Key? key}) : super(key: key);
+
+  @override
+  _TagViewState createState() => _TagViewState();
+}
+
+class _TagViewState extends State<TagView> {
+  late bool selected;
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    selected = Random().nextBool();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Chip(
+        label: Text(widget.tag.name, style: TextStyle(color: Colors.white)),
+      backgroundColor: selected ? Colors.black : Colors.grey,
+    );
+  }
+}
+
+

@@ -68,27 +68,27 @@ class _SongState extends State<Song> {
                 children: [
                     Column(
                       children: [
-                        Text("BPM"),
+                        const Text("BPM"),
                         if (widget.song.bpm != null)
-                          Text("${widget.song.bpm.toString()}")
+                          Text(widget.song.bpm.toString())
                         else
-                          Text(''),
+                          const Text(''),
                     ]),
                     Column(
                         children: [
-                          Text("Duration"),
+                          const Text("Duration"),
                           if (widget.song.duration != null)
-                            Text("${widget.song.duration.toString()}")
+                            Text(widget.song.duration.toString())
                           else
-                            Text(''),
+                            const Text(''),
                         ]),
                     Column(
                         children: [
-                          Text("Released"),
+                          const Text("Released"),
                           if (widget.song.yearOfRelease != null)
-                            Text("${widget.song.yearOfRelease.toString()}")
+                            Text(widget.song.yearOfRelease.toString())
                           else
-                            Text('')
+                            const Text('')
                         ]),
                 ],
               ),

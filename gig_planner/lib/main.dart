@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:gig_planner_sketch/controllers/controller.dart';
+import 'package:gig_planner_sketch/views/set_library/select_set.dart';
+import 'package:gig_planner_sketch/views/song_library/select_song.dart';
 import 'package:postgres/postgres.dart';
 import 'views/tags/tags_library.dart';
 import 'views/views.dart';

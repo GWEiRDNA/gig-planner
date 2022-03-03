@@ -9,6 +9,9 @@ import '../models/user_model.dart';
 class Controller{
   UserModel user;
 
+  SongModel? _selectedSong;
+  SetModel? _selectedSet;
+
   Controller(this.user);
 
   //Events
@@ -83,7 +86,19 @@ class Controller{
   }
 
   //TAGS
-  //TAG GROUPS
+    //TAGS
+  bool createNewTag(String name, String? groupId){
+    int NewId = Random().nextInt(2000000);
+    TagModel newTag = TagModel(id: "T${NewId}", name: name, userId: user.id, tagGroupId: groupId);
+    user.tags.add(newTag);
+    return true;
+  }
+
+  bool deleteTag(String id){
+    user.tags.removeWhere((tag) => tag.id == id);
+    return true;
+  }
+    //TAG GROUPS
   bool createNewTagGroup(String name, String? color){
     int NewId = Random().nextInt(2000000);
     TagGroupModel newTagGroup = TagGroupModel(id: "TG${NewId}", userId: user.id, name: name, color: color);
@@ -100,5 +115,47 @@ class Controller{
   bool deleteTagGroup(TagGroupModel tg){
     user.tagGroups.removeWhere((tagGroup) => tagGroup.id == tg.id);
     return true;
+  }
+
+  //SONGS
+  void selectSong(SongModel song) {
+    _selectedSong = song;
+  }
+
+  SongModel? get selectedSong => _selectedSong;
+
+  //SETS
+  bool createSet(){
+    int NewId = Random().nextInt(2000000);
+    SetModel newSet = SetModel(id: "S${NewId}", userId: user.id, name: "Set");
+    user.sets.add(newSet);
+    return true;
+  }
+
+  void selectSet(SetModel value) {
+    _selectedSet = value;
+  }
+
+  SetModel? get selectedSet => _selectedSet;
+
+  bool deleteSongFromSet(SetModel set, SongModel song) {
+    user.sets.firstWhere((sett) => sett.id == set.id).songs.removeWhere((oldSong) => oldSong.id == song.id);
+    return true;
+  }
+
+  void addSongToSet(SetModel set, SongModel? selectedSong) {
+    if(SongModel != null) {
+      user.sets.firstWhere((sett) => sett.id == set.id).songs.add(selectedSong!);
+    }
+  }
+
+  void updateSetName(SetModel updatedSet, String? name) {
+    if(name != null) {
+      user.sets.firstWhere((sett) => sett.id == updatedSet.id).name = name;
+    }
+  }
+
+  void deleteSet(SetModel set) {
+    user.sets.removeWhere((element) => element.id == set.id);
   }
 }

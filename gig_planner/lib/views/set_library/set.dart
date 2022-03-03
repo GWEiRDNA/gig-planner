@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:gig_planner_sketch/views/set_library/set_form.dart';
 
 import '../../controllers/controller.dart';
 import '../../models/set_model.dart';
+import '../../models/song_model.dart';
 
 class Set extends StatefulWidget {
   final Controller ctl;
@@ -33,12 +35,19 @@ class _SetState extends State<Set> {
                   else
                     const Text("Set"),
                   Row(children: [
-                    IconButton(onPressed: () {}, icon: const Icon(Icons.edit)),
-                    IconButton(onPressed: () {}, icon: const Icon(Icons.expand_more)),
+                    IconButton(onPressed: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(builder: (_) => SetForm(ctl: widget.ctl, updatedSet: widget.set))
+                      );
+                    }, icon: const Icon(Icons.edit)),
+                    IconButton(onPressed: () {
+                      widget.ctl.deleteSet(widget.set);
+                    }, icon: const Icon(Icons.delete)),
                   ])
                 ],
               ),
-              const SetElements(),
+              SetElements(ctl: widget.ctl, set: widget.set),
             ],
           ),
         ]),
@@ -51,7 +60,9 @@ class _SetState extends State<Set> {
 }
 
 class SetElements extends StatefulWidget {
-  const SetElements({Key? key}) : super(key: key);
+  final Controller ctl;
+  final SetModel set;
+  const SetElements({required this.ctl, required this.set, Key? key}) : super(key: key);
 
   @override
   _SetElementsState createState() => _SetElementsState();
@@ -60,18 +71,15 @@ class SetElements extends StatefulWidget {
 class _SetElementsState extends State<SetElements> {
   @override
   Widget build(BuildContext context) {
-    final songs = ["Satisfaction", "Mambo No.5", "Wehikuł Czasu"];
+    List<SongModel> songs = widget.set.songs;
     return Container(
       child: ListView.builder(
           padding: const EdgeInsets.all(8),
-          itemCount: songs.length + 1,
+          itemCount: songs.length,
           shrinkWrap: true,
           scrollDirection: Axis.vertical,
           itemBuilder: (_, i) {
-            if (i >= songs.length) {
-              return const AddSongToSet();
-            }
-            return SetSong(songs[i]);
+            return SetSong(songs[i].title);
           }),
       alignment: Alignment.topLeft,
       decoration: const BoxDecoration(
@@ -103,27 +111,5 @@ class SetSong extends StatelessWidget {
         alignment: Alignment.topLeft,
         margin: const EdgeInsets.all(5),
         padding: const EdgeInsets.all(5));
-  }
-}
-
-class AddSongToSet extends StatelessWidget {
-  const AddSongToSet({Key? key}) : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-        child: Row(
-          children: [
-            IconButton(onPressed: () {}, icon: const Icon(Icons.add), iconSize: 20),
-            const Text("Add song"),
-          ],
-        ),
-        decoration: const BoxDecoration(
-            color: Colors.grey,
-            borderRadius: BorderRadius.all(Radius.circular(5))),
-        alignment: Alignment.topLeft,
-        margin: const EdgeInsets.all(5),
-        //padding: const EdgeInsets.all(5),
-    );
   }
 }
