@@ -1,6 +1,6 @@
 import 'package:gig_planner_sketch/views/event_library/event.dart';
 import 'package:gig_planner_sketch/views/song_library/song.dart';
-import 'package:gig_planner_sketch/views/tags/tags.dart';
+import 'package:gig_planner_sketch/views/tags/tags_library.dart';
 
 import 'models.dart';
 
@@ -34,9 +34,9 @@ class UserModel {
     _tags.add(TagModel(id: "T2", name: "Fast", userId: "U1", tagGroupId: "TG1"));
     _tags.add(TagModel(id: "T3", name: "TODO", userId: "U1"));
     _songs.add(
-        SongModel(id: "S1", title: "Knocking on Heavens door", ownerId: "U1"));
-    _songs.add(SongModel(id: "S2", title: "Mambo No. 5", ownerId: "U1"));
-    _songs.add(SongModel(id: "S3", title: "Stairway to Heaven", ownerId: "U1"));
+        SongModel(id: "S1", title: "Knocking on Heavens door", ownerId: "U1", bpm: 80, duration: "5:15", yearOfRelease: 1976));
+    _songs.add(SongModel(id: "S2", title: "Mambo No. 5", ownerId: "U1", bpm: 120, album: "Mambo, Mambo"));
+    _songs.add(SongModel(id: "S3", title: "Stairway to Heaven", ownerId: "U1", duration: "6:15", yearOfRelease: 1969));
     _sets.add(SetModel(id: "S1", userId: "U1"));
     _playlists.add(PlaylistModel("P1", "U1"));
     _events.add(EventModel(id: 'E1', name: "New Year", permissions: "owner", playlist: _playlists.first));
@@ -62,4 +62,14 @@ class UserModel {
   String get eMail => _eMail;
 
   String get id => _id;
+
+  List<AuthorModel> getAuthors(){
+    List<AuthorModel> authors = <AuthorModel>[];
+    authors.add(AuthorModel("A1", "Billy Joel", "U1"));
+    authors.add(AuthorModel("A2", "Phil Collins", "U1"));
+    authors.add(AuthorModel("A3", "Billie Eilish", "U1"));
+    authors.add(AuthorModel("A4", "Michael Jackson", "U1"));
+    authors.add(AuthorModel("A5", "Guns & Roses", "U1"));
+    return authors;
+  }
 }

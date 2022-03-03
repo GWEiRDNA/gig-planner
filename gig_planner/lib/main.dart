@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:gig_planner_sketch/controllers/controller.dart';
 import 'package:postgres/postgres.dart';
-import 'views/tags/tags.dart';
+import 'views/tags/tags_library.dart';
 import 'views/views.dart';
 import 'models/user_model.dart';
 import 'models/models.dart';
@@ -29,6 +29,7 @@ class MyApp extends StatelessWidget {
       "Tags",
       "Transitions",
       "Settings",
+      "Authors"
     ];
 
     return Scaffold(
@@ -91,6 +92,15 @@ class MyApp extends StatelessWidget {
           const Divider(),
           ListTile(
             title: Text(fields[5]),
+          ),
+          const Divider(),
+          ListTile(
+            title: Text(fields[6]),
+            onTap: (){
+              Navigator.push(context,
+                MaterialPageRoute(builder: (_) => AuthorsLibrary(ctl: ctl))
+              );
+            },
           ),
           const Divider(),
           // ListTile(

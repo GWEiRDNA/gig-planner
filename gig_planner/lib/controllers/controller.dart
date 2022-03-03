@@ -1,4 +1,7 @@
 import 'package:gig_planner_sketch/views/playlist.dart';
+import 'package:gig_planner_sketch/views/tags/tags_library.dart';
+import 'dart:math';
+
 
 import '../models/models.dart';
 import '../models/user_model.dart';
@@ -68,5 +71,34 @@ class Controller{
 
   getTransitions(){
     return <TransitionModel>[TransitionModel(user.songs.first, user.songs.elementAt(2), 30, false)];
+  }
+
+  bool newSong(){
+    //createSong(user, others....)
+    return true;
+  }
+  bool updateSong(SongModel proposedSong){
+    //if(tryUpdatingSong(user, proposedSong) == true){}
+    return true;
+  }
+
+  //TAGS
+  //TAG GROUPS
+  bool createNewTagGroup(String name, String? color){
+    int NewId = Random().nextInt(2000000);
+    TagGroupModel newTagGroup = TagGroupModel(id: "TG${NewId}", userId: user.id, name: name, color: color);
+    user.tagGroups.add(newTagGroup);
+    return true;
+  }
+
+  bool updateTagGroup(TagGroupModel newTagGroup){
+    user.tagGroups.removeWhere((tagGroup) => tagGroup.id == newTagGroup.id);
+    user.tagGroups.add(newTagGroup);
+    return true;
+  }
+
+  bool deleteTagGroup(TagGroupModel tg){
+    user.tagGroups.removeWhere((tagGroup) => tagGroup.id == tg.id);
+    return true;
   }
 }

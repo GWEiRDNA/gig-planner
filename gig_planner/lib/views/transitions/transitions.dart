@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 
-import '../controllers/controller.dart';
-import '../models/transition_model.dart';
+import '../../controllers/controller.dart';
+import '../../models/transition_model.dart';
+import 'new_transition.dart';
 
 class Transitions extends StatefulWidget {
   Controller ctl;
@@ -24,7 +25,17 @@ class _TransitionsState extends State<Transitions> {
           itemBuilder: (context, i) {
             return Transition(ctl: widget.ctl, transition: widget.transitions[i]);
           }
-      )
+      ),
+      floatingActionButton:
+        FloatingActionButton(
+          child: const Icon(Icons.add),
+          backgroundColor: Colors.blue,
+          onPressed: (){
+            Navigator.push(context,
+              MaterialPageRoute(builder: (_) => NewTransition(ctl: widget.ctl))
+            );
+          },
+      ),
     );
   }
 }
