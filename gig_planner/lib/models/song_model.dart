@@ -4,12 +4,12 @@ class SongModel {
   String title;
   String? album;
   int? yearOfRelease;
-  int? bpm;
+  double? bpm;
   String? lyrics;
   String? sheetMusic;
   String? mp3;
   int? duration;
-  int? authorIds;
+  String? authorIds;
   List<int>? tagIds;
 
   SongModel({

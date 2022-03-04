@@ -43,7 +43,8 @@ String selectSongsQuery =
 """ 
   SELECT 
     s.*,
-    st.tags
+    st.tags,
+    sa.authors
   FROM
     songs s
     LEFT JOIN 
@@ -58,6 +59,18 @@ String selectSongsQuery =
       GROUP BY
         s2.id
     ) st ON st.id = s.id
+    LEFT JOIN 
+    (
+      SELECT
+        s3.id id,
+        STRING_AGG(a.id::character varying, ' ') authors
+      FROM
+        songs_authors sa
+        JOIN songs s3 ON sa.songs_id = s3.id
+        JOIN authors a ON sa.authors_id = a.id
+      GROUP BY
+        s3.id
+    ) sa ON sa.id = s.id
   WHERE 
     users_id = '@userId'
 """;

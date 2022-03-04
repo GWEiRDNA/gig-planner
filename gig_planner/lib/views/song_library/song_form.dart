@@ -24,7 +24,7 @@ class _SongFormState extends State<SongForm> {
   String? lyrics;
   String? sheetMusic;
   String? mp3;
-  int? bpm;
+  double? bpm;
   int? duration;
   int? released;
 
@@ -119,7 +119,7 @@ class _SongFormState extends State<SongForm> {
                   lyrics: lyrics,
                   mp3: mp3,
                   duration: duration,
-                  authorIds: author,
+                  authorIds: author
                   //tagIds: tag,
                 );
                 if(ctl.updateSong(proposedSong)) {

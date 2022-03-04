@@ -57,8 +57,24 @@ class UserModel {
   Future<void> pullSongs() async {
     List<Map<String, Map<String, dynamic>>> results = await executeQuery(_connection, selectSongsQuery, {'@userId': _id});
     _songs.clear();
+
     for (final row in results) {
-      print(row.toString());
+      List<int>? tagIds = [];
+      if(row[''] != null && row['']!['tags'] != null) {
+        for (String strId in row['']!['tags'].split(' ')) {
+          tagIds.add(int.parse(strId));
+        }
+      }
+      String? authorsIds;
+      if(row[''] != null && row['']!['authors'] != null) {
+        authorsIds = row['']!['authors'];
+        // for (String strId in row['']!['authors'].split(' ')) {
+        //   authorsIds.add(int.parse(strId));
+        // }
+      }
+      print(row);
+      print(tagIds);
+      print(authorsIds);
       _songs.add(SongModel(
         id: row['songs']!['id'],
         ownerId: row['songs']!['users_id'],
@@ -67,7 +83,9 @@ class UserModel {
         bpm: row['songs']!['bpm'],
         lyrics: row['songs']!['lyrics'],
         mp3: row['songs']!['mp3'],
-        duration: row['songs']!['length']
+        duration: row['songs']!['length'],
+        tagIds: tagIds,
+        authorIds: authorsIds
       ));
     }
   }
