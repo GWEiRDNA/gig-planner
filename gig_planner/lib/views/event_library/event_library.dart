@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:gig_planner_sketch/controllers/controller.dart';
 import '../../models/event_model.dart';
+import 'create_event.dart';
 import 'event.dart';
 import '../playlist.dart';
 
@@ -33,8 +34,13 @@ class _EventLibraryState extends State<EventLibrary> {
         itemCount: widget.events.length,
         itemBuilder: (context, i) {
           return EventTile(ctl: widget.ctl, eventId: widget.events[i].id, notifyParent: refresh);
-        }
-        ,
+        },
+      ),
+      floatingActionButton: FloatingActionButton(
+          child: const Icon(Icons.add),
+          onPressed: (){
+            Navigator.push(context, MaterialPageRoute(builder: (_) => CreateEvent(ctl: widget.ctl)));
+          }
       ),
     );
   }

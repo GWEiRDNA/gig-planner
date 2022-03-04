@@ -158,4 +158,23 @@ class Controller{
   void deleteSet(SetModel set) {
     user.sets.removeWhere((element) => element.id == set.id);
   }
+
+  //PLAYLISTS
+  void addSetToPlaylist(PlaylistModel playlist, SetModel selectedSet) {
+    PlaylistElementModel newSet = PlaylistElementModel.set(set: selectedSet);
+    user.playlists.firstWhere((p) => p.id == playlist.id).playlistElements.add(newSet);
+  }
+
+  void addSongToPlaylist(PlaylistModel playlistModel, SongModel songModel) {
+    PlaylistElementModel newSong = PlaylistElementModel.song(song: songModel);
+    user.playlists.firstWhere((p) => p.id == playlistModel.id).playlistElements.add(newSong);
+  }
+
+  void deleteSongFromPlaylist(PlaylistModel playlistModel, SongModel songModel) {
+    user.playlists.firstWhere((p) => p.id == playlistModel.id).playlistElements.removeWhere((s) => s.id == songModel.id);
+  }
+
+  void deleteSetFromPlaylist(PlaylistModel playlistModel, SetModel set) {
+    user.playlists.firstWhere((p) => p.id == playlistModel.id).playlistElements.removeWhere((s) => s.id == set.id);
+  }
 }

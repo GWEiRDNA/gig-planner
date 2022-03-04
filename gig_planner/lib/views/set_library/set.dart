@@ -98,10 +98,6 @@ class SetSong extends StatelessWidget {
     return Container(
         child: Row(
           children: [
-            const Visibility(
-              child: Icon(Icons.drag_handle),
-              // visible: false,
-            ),
             Text(_songTitle),
           ],
         ),

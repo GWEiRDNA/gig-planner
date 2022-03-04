@@ -1,4 +1,4 @@
-#Fri Feb 25 09:22:09 CET 2022
+#Fri Mar 04 12:38:24 CET 2022
 base.0=/home/andrew/Documents/gig-planner/gig_planner/build/app/intermediates/dex/debug/mergeDexDebug/classes.dex
 renamed.0=classes.dex
 path.0=classes.dex
