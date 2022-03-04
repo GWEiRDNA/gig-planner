@@ -1,0 +1,4 @@
+#Fri Mar 04 03:52:42 CET 2022
+base.0=D\:\\git projekty\\gig 2\\gig-planner\\gig_planner\\build\\app\\intermediates\\dex\\debug\\mergeDexDebug\\classes.dex
+renamed.0=classes.dex
+path.0=classes.dex
