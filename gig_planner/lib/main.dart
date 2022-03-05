@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:gig_planner_sketch/controllers/controller.dart';
+import 'package:gig_planner_sketch/controllers/login_controller.dart';
+import 'package:gig_planner_sketch/views/login.dart';
 import 'package:gig_planner_sketch/views/set_library/select_set.dart';
 import 'package:gig_planner_sketch/views/song_library/select_song.dart';
 import 'package:postgres/postgres.dart';
@@ -30,7 +32,7 @@ class MyApp extends StatelessWidget {
       "Set Library",
       "Tags",
       "Transitions",
-      "Settings",
+      "Login",
       "Authors"
     ];
 
@@ -94,6 +96,11 @@ class MyApp extends StatelessWidget {
           const Divider(),
           ListTile(
             title: Text(fields[5]),
+              onTap: () {
+                Navigator.push(
+                    context, MaterialPageRoute(builder: (_) => LoginView(logCtl: LoginController(),))
+                );
+              }
           ),
           const Divider(),
           ListTile(
