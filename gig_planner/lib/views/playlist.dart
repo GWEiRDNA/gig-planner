@@ -130,7 +130,7 @@ class SongRepresentation extends StatelessWidget {
           children: [
             ListTile(
               title: Text(song.title),
-              subtitle: Text(song.getAuthors()),
+              subtitle: Text(song.getAuthors().name),
               enabled: true,
               trailing: IconButton(
                   onPressed: () {

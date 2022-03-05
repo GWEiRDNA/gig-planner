@@ -2,6 +2,7 @@ import 'dart:math';
 
 import 'package:flutter/material.dart';
 import 'package:gig_planner_sketch/models/models.dart';
+import 'package:gig_planner_sketch/views/authors/select_author.dart';
 import '../../controllers/controller.dart';
 
 class SongForm extends StatefulWidget {
@@ -18,7 +19,7 @@ class SongForm extends StatefulWidget {
 
 class _SongFormState extends State<SongForm> {
   String title = "";
-  String? author;
+  AuthorModel? author;
   String? album;
   String? lyrics;
   String? sheetMusic;
@@ -27,6 +28,11 @@ class _SongFormState extends State<SongForm> {
   String? duration;
   int? released;
   List<TagModel> selectedTags = [];
+
+  selectAuthor(AuthorModel selectedAuthor){
+    author = selectedAuthor;
+    setState(() {});
+  }
 
   @override void initState() {
     super.initState();
@@ -64,11 +70,12 @@ class _SongFormState extends State<SongForm> {
               ),
             ),
             //Author
-            TextFormField(
-              initialValue: author,
-              decoration: const InputDecoration(
-                hintText: "Song's author",
-              ),
+            ListTile(
+              title: Text(author != null ? author!.name : "Select author"),
+              onTap: (){Navigator.push(
+                context,
+                MaterialPageRoute(builder: (_) => SelectAuthor(ctl: widget.ctl, refreshCaller: selectAuthor))
+              );}
             ),
             //Album
             TextFormField(
@@ -117,7 +124,7 @@ class _SongFormState extends State<SongForm> {
                 lyrics: lyrics,
                 mp3: mp3,
                 duration: duration,
-                authorIds: author,
+                authorIds: author != null ? author!.id : null,
                 preTags: selectedTags,
               );
               if(widget.isUpdated && widget.ctl.updateSong(proposedSong)) {

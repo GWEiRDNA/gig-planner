@@ -11,9 +11,12 @@ class UserModel {
   List<EventModel> _events = <EventModel>[];
   List<SongModel> _songs = <SongModel>[];
   List<SetModel> _sets = <SetModel>[];
+
+  List<AuthorModel> get authors => _authors;
   List<TagModel> _tags = <TagModel>[];
   List<TagGroupModel> _tagGroups = <TagGroupModel>[];
   List<PlaylistModel> _playlists = <PlaylistModel>[];
+  List<AuthorModel> _authors = <AuthorModel>[];
   UserModel(id, eMail, nick)
       : _id = id,
         _eMail = eMail,
@@ -44,6 +47,11 @@ class UserModel {
     _playlists.add(PlaylistModel("P1", "U1"));
     _events.add(EventModel(id: 'E1', name: "New Year", permissions: "owner", playlist: _playlists.first));
     _tagGroups.add(TagGroupModel(id: "TG1", userId: "U1", name: "Tempo"));
+    _authors.add(AuthorModel("A1", "Billy Joel", "U1"));
+    _authors.add(AuthorModel("A2", "Phil Collins", "U1"));
+    _authors.add(AuthorModel("A3", "Billie Eilish", "U1"));
+    _authors.add(AuthorModel("A4", "Michael Jackson", "U1"));
+    _authors.add(AuthorModel("A5", "Guns & Roses", "U1"));
   }
 
   //TODO: Refresh
@@ -65,14 +73,4 @@ class UserModel {
   String get eMail => _eMail;
 
   String get id => _id;
-
-  List<AuthorModel> getAuthors(){
-    List<AuthorModel> authors = <AuthorModel>[];
-    authors.add(AuthorModel("A1", "Billy Joel", "U1"));
-    authors.add(AuthorModel("A2", "Phil Collins", "U1"));
-    authors.add(AuthorModel("A3", "Billie Eilish", "U1"));
-    authors.add(AuthorModel("A4", "Michael Jackson", "U1"));
-    authors.add(AuthorModel("A5", "Guns & Roses", "U1"));
-    return authors;
-  }
 }

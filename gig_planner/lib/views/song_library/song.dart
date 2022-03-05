@@ -31,7 +31,7 @@ class _SongState extends State<Song> {
           children: [
             ListTile(
               title: Text(widget.song.title),
-              subtitle: Text(widget.song.getAuthors()),
+              subtitle: Text(widget.song.getAuthors().name),
               enabled: true,
               trailing: IconButton(
                   onPressed: () {

@@ -1,3 +1,4 @@
+import 'package:gig_planner_sketch/models/author_model.dart';
 import 'package:gig_planner_sketch/models/tag_model.dart';
 
 class SongModel {
@@ -28,7 +29,7 @@ class SongModel {
     List<TagModel>? preTags,
   }) : tags = preTags ?? [];
 
-  String getAuthors(){
-    return "Unknown Author";
+  AuthorModel getAuthors(){
+    return AuthorModel("000", "Unknown Author", "U1");
   }
 }

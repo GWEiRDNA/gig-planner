@@ -200,6 +200,20 @@ class Controller{
     return SongModel(id: "S${NewId}", title: "New Song", ownerId: user.id);
   }
 
+  void deleteAuthor(AuthorModel author) {
+    user.authors.removeWhere((a) => a.id == author.id);
+  }
+
+  void updateAuthor(AuthorModel author, String text) {
+    user.authors.removeWhere((a) => a.id == author.id);
+    user.authors.add(AuthorModel(author.id, text, author.ownerId));
+  }
+
+  void crateAuthor(String newAuthorName) {
+    int NewId = Random().nextInt(2000000);
+    user.authors.add(AuthorModel("A${NewId}", newAuthorName, user.id));
+  }
+
   //EVENTS
 
 }
