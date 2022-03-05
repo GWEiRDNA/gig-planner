@@ -177,4 +177,23 @@ class Controller{
   void deleteSetFromPlaylist(PlaylistModel playlistModel, SetModel set) {
     user.playlists.firstWhere((p) => p.id == playlistModel.id).playlistElements.removeWhere((s) => s.id == set.id);
   }
+
+  EventModel? createBlankEvent() {
+    int NewId = Random().nextInt(2000000);
+    EventModel ev = EventModel(id: "E${NewId}", name: "Event", permissions: "write");
+    user.events.add(ev);
+    return ev;
+  }
+
+  void updateEvent(EventModel updatedEv) {
+    user.events.removeWhere((ev) => ev.id == updatedEv.id);
+    user.events.add(updatedEv);
+  }
+
+  void deleteEvent(EventModel event) {
+    user.events.removeWhere((ev) => ev.id == event.id);
+  }
+
+  //EVENTS
+
 }

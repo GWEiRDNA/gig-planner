@@ -2,10 +2,12 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 import '../../controllers/controller.dart';
+import '../../models/event_model.dart';
 
 class CreateEvent extends StatefulWidget {
   final Controller ctl;
-  const CreateEvent({required this.ctl, Key? key}) : super(key: key);
+  EventModel? ev;
+  CreateEvent({required this.ctl, this.ev, Key? key}) : super(key: key);
 
   @override
   _CreateEventState createState() => _CreateEventState();
@@ -16,6 +18,20 @@ class _CreateEventState extends State<CreateEvent> {
   String? startDate = "";
   String? endDate = "";
   String? description = "";
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    if(widget.ev != null){
+      name = widget.ev!.name;
+      startDate = widget.ev!.startDate ?? "";
+      endDate = widget.ev!.endDate ?? "";
+      description = widget.ev!.description ?? "";
+    }else{
+      widget.ev = widget.ctl.createBlankEvent();
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -68,7 +84,10 @@ class _CreateEventState extends State<CreateEvent> {
               ),
               ElevatedButton(
                   onPressed: (){
-                    widget.ctl.createEvent();
+                    EventModel updatedEv = EventModel(id: widget.ev!.id, name: name, permissions: widget.ev!.permissions, description: description, endDate: endDate, startDate: startDate);
+                    widget.ctl.updateEvent(updatedEv);
+                    setState(() {});
+                    Navigator.pop(context);
                   },
                   child: const Icon(Icons.check),
               )
