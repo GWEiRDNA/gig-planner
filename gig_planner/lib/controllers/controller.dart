@@ -76,12 +76,13 @@ class Controller{
     return <TransitionModel>[TransitionModel(user.songs.first, user.songs.elementAt(2), 30, false)];
   }
 
-  bool newSong(){
-    //createSong(user, others....)
+  bool newSong(SongModel proposedSong){
+    user.songs.add(proposedSong);
     return true;
   }
   bool updateSong(SongModel proposedSong){
-    //if(tryUpdatingSong(user, proposedSong) == true){}
+    user.songs.removeWhere((s) => s.id == proposedSong.id);
+    user.songs.add(proposedSong);
     return true;
   }
 
@@ -192,6 +193,11 @@ class Controller{
 
   void deleteEvent(EventModel event) {
     user.events.removeWhere((ev) => ev.id == event.id);
+  }
+
+  SongModel createBlankSong() {
+    int NewId = Random().nextInt(2000000);
+    return SongModel(id: "S${NewId}", title: "New Song", ownerId: user.id);
   }
 
   //EVENTS

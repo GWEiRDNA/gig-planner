@@ -1,3 +1,5 @@
+import 'package:gig_planner_sketch/models/tag_model.dart';
+
 class SongModel {
   String id;
   String ownerId;
@@ -10,7 +12,7 @@ class SongModel {
   String? mp3;
   String? duration;
   String? authorIds;
-  List<String>? tagIds;
+  List<TagModel> tags;
 
   SongModel({
     required this.id,
@@ -23,8 +25,8 @@ class SongModel {
     this.mp3,
     this.duration,
     this.authorIds,
-    this.tagIds,
-  });
+    List<TagModel>? preTags,
+  }) : tags = preTags ?? [];
 
   String getAuthors(){
     return "Unknown Author";

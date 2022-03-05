@@ -6,9 +6,9 @@ import '../../controllers/controller.dart';
 
 class SongForm extends StatefulWidget {
   Controller ctl;
-  SongModel? song;
+  SongModel song;
   bool isUpdated;
-  SongForm.new({required this.ctl, Key? key}) : isUpdated = false, super(key: key);
+  SongForm.new({required this.ctl, Key? key}) : isUpdated = false, song = ctl.createBlankSong(), super(key: key);
   SongForm.edit({required this.ctl, required this.song, Key? key})
       : isUpdated = true, super(key: key);
 
@@ -17,7 +17,6 @@ class SongForm extends StatefulWidget {
 }
 
 class _SongFormState extends State<SongForm> {
-  late final Controller ctl;
   String title = "";
   String? author;
   String? album;
@@ -27,24 +26,22 @@ class _SongFormState extends State<SongForm> {
   int? bpm;
   String? duration;
   int? released;
+  List<TagModel> selectedTags = [];
 
   @override void initState() {
     super.initState();
-    ctl = widget.ctl;
     if(widget.isUpdated){
-      title = widget.song!.title;
-      album = widget.song!.album ?? "";
-      lyrics = widget.song!.lyrics ?? "";
-      sheetMusic = widget.song!.sheetMusic ?? "";
-      mp3 = widget.song!.mp3 ?? "";
-      bpm = widget.song!.bpm;
-      duration = widget.song!.duration ?? "";
-      released = widget.song!.yearOfRelease;
-      author = widget.song!.getAuthors();
-    }else {
-      title = "";
-      author = album = lyrics = sheetMusic = mp3 = duration = "";
-      bpm = released = null;
+      title = widget.song.title;
+      album = widget.song.album ?? "";
+      lyrics = widget.song.lyrics ?? "";
+      sheetMusic = widget.song.sheetMusic ?? "";
+      mp3 = widget.song.mp3 ?? "";
+      bpm = widget.song.bpm;
+      duration = widget.song.duration ?? "";
+      released = widget.song.yearOfRelease;
+      author = widget.song.getAuthors();
+      selectedTags = widget.song.tags;
+      //TODO: getAuthors
     }
   }
 
@@ -88,7 +85,7 @@ class _SongFormState extends State<SongForm> {
             Text("Chords"),
             //BMP
             TextFormField(
-              initialValue: bpm != null? bpm.toString() : "",
+              initialValue: bpm != null ? bpm.toString() : "",
               decoration: const InputDecoration(
                 hintText: "Tempo in BPM ex. 140",
               ),
@@ -107,30 +104,29 @@ class _SongFormState extends State<SongForm> {
                 hintText: "Year of release ex. 1924",
               ),
             ),
-            IconButton(onPressed: (){
-              if(widget.isUpdated){
-                final proposedSong = SongModel(
-                  id: widget.song!.id,
-                  title: title,
-                  ownerId: ctl.user.id,
-                  album: album,
-                  yearOfRelease: released,
-                  bpm: bpm,
-                  lyrics: lyrics,
-                  mp3: mp3,
-                  duration: duration,
-                  authorIds: author,
-                  //tagIds: tag,
-                );
-                if(ctl.updateSong(proposedSong)) {
-                  Navigator.pop(context);
-                }
+            TagsView(ctl: widget.ctl, song: widget.song, selTags: selectedTags),
+            ElevatedButton(
+                onPressed: (){
+              final proposedSong = SongModel(
+                id: widget.song.id,
+                title: title,
+                ownerId: widget.ctl.user.id,
+                album: album,
+                yearOfRelease: released,
+                bpm: bpm,
+                lyrics: lyrics,
+                mp3: mp3,
+                duration: duration,
+                authorIds: author,
+                preTags: selectedTags,
+              );
+              if(widget.isUpdated && widget.ctl.updateSong(proposedSong)) {
+                Navigator.pop(context);
               }
-                if(ctl.newSong()) {
-                  Navigator.pop(context);
-                }
-            }, icon: const Icon(Icons.check)),
-            TagsView(ctl: ctl),
+              if(!widget.isUpdated && widget.ctl.newSong(proposedSong)) {
+                Navigator.pop(context);
+              }
+            }, child: const Icon(Icons.check)),
           ],
       ),
         )),
@@ -138,10 +134,11 @@ class _SongFormState extends State<SongForm> {
   }
 }
 
-
 class TagsView extends StatefulWidget {
   Controller ctl;
-  TagsView({required this.ctl, Key? key}) : super(key: key);
+  SongModel song;
+  List<TagModel> selTags;
+  TagsView({required this.ctl, required this.song, required this.selTags, Key? key}) : super(key: key);
 
   @override
   _TagsViewState createState() => _TagsViewState();
@@ -158,9 +155,9 @@ class _TagsViewState extends State<TagsView> {
       itemCount: tagGroups.length + 1,
       itemBuilder: (context, i) {
         if(i == tagGroups.length) {
-          return TagGroupView.others(ctl: widget.ctl);
+          return TagGroupView.others(ctl: widget.ctl, song: widget.song, selTags: widget.selTags);
         }
-        return TagGroupView(ctl: widget.ctl, tg: tagGroups[i]);
+        return TagGroupView(ctl: widget.ctl, tg: tagGroups[i], song: widget.song, selTags: widget.selTags);
       },
     );
   }
@@ -169,8 +166,10 @@ class _TagsViewState extends State<TagsView> {
 class TagGroupView extends StatefulWidget {
   Controller ctl;
   TagGroupModel? tg;
-  TagGroupView({required this.ctl, required this.tg, Key? key}) : super(key: key);
-  TagGroupView.others({required this.ctl, Key? key}) :super(key: key);
+  List<TagModel> selTags;
+  SongModel song;
+  TagGroupView({required this.ctl, required this.tg, required this.song, required this.selTags, Key? key}) : super(key: key);
+  TagGroupView.others({required this.ctl, required this.song, required this.selTags, Key? key}) :super(key: key);
 
   @override
   _TagGroupViewState createState() => _TagGroupViewState();
@@ -199,7 +198,7 @@ class _TagGroupViewState extends State<TagGroupView> {
         widget.tg != null ? Text(widget.tg!.name) : const Text("Others"),
         Wrap(
           children: [
-            for (TagModel tag in tags) TagView(ctl: widget.ctl, tag: tag),
+            for (TagModel tag in tags) TagView(ctl: widget.ctl, song: widget.song, tag: tag, selTags: widget.selTags),
           ],
         ),
       ],
@@ -210,7 +209,9 @@ class _TagGroupViewState extends State<TagGroupView> {
 class TagView extends StatefulWidget {
   Controller ctl;
   TagModel tag;
-  TagView({required this.ctl, required this.tag, Key? key}) : super(key: key);
+  List<TagModel> selTags;
+  SongModel song;
+  TagView({required this.ctl, required this.song, required this.tag, required this.selTags, Key? key}) : super(key: key);
 
   @override
   _TagViewState createState() => _TagViewState();
@@ -223,14 +224,28 @@ class _TagViewState extends State<TagView> {
   void initState() {
     // TODO: implement initState
     super.initState();
-    selected = Random().nextBool();
+    selected = widget.song.tags.isNotEmpty && widget.song.tags.any((t) => t.id== widget.tag.id);
   }
 
   @override
   Widget build(BuildContext context) {
-    return Chip(
-        label: Text(widget.tag.name, style: TextStyle(color: Colors.white)),
-      backgroundColor: selected ? Colors.black : Colors.grey,
+    selected = widget.song.tags.isNotEmpty && widget.song.tags.any((t) => t.id== widget.tag.id);
+    return GestureDetector(
+      child: Chip(
+          label: Text(widget.tag.name, style: TextStyle(color: Colors.white)),
+        backgroundColor: selected ? Colors.black : Colors.grey,
+      ),
+      onTap: (){
+        setState(() {
+          if(!selected){
+            widget.selTags.add(widget.tag);
+            selected = true;
+          }else{
+            widget.selTags.removeWhere((tag) => tag.id == widget.tag.id);
+            selected = false;
+          }
+        });
+      },
     );
   }
 }
