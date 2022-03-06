@@ -1,7 +1,8 @@
+\c gigplanner;
 
-insert into users (email, password, name) values ('jcasetti0@delicious.com', 'c352854ecf97cebf8d21f0f9da99ea89ea56e8a11c2945d85d58ce5d1d08e9a1', 'cwillsmore0');
-insert into users (email, password, name) values ('gforman1@mysql.com', '11c8569fe313182a98230774956fd76f80847bbccc8174c2c20c899c8f5da5c4', 'rcastagne1');
-insert into users (email, password, name) values ('fgabriely2@patch.com', '390842a2325c65110df82488a5dd26aec5328cf4ac97a75cd3e567b9ce2503c4', 'sswitzer2');
+insert into users (email, password, name) values ('marta@o2.pl', '$5$v9SferVS2DklThF0$LUhsnIp6dGzwDoN6WjtlVYwZXXR0auOMk8cRPNwkiq/', 'marta123');
+insert into users (email, password, name) values ('ania@wp.pl', '$5$IZKvqMjDzEkxwfjL$ubWtUpj9miaf5WdVfn/eX/9TMSJI4cMbhQcb624uo57', 'anii');
+insert into users (email, password, name) values ('basia@gmail.com', '$5$xOLBeh1ivmRuyaan$e9z8r2gAz2uKgejz97d/FaSO3dXX.AXrJ6/Jc6Mn1B5', 'b4sia');
 
 insert into tag_groups (Users_ID, name, color) values (3, 'client-server', '#66c628');
 insert into tag_groups (Users_ID, name, color) values (3, 'bifurcated', '#8b6866');
@@ -10,36 +11,36 @@ insert into tag_groups (Users_ID, name, color) values (2, 'complexity', '#345dbf
 insert into tag_groups (Users_ID, name, color) values (1, 'responsive', '#0e23fb');
 insert into tag_groups (Users_ID, name, color) values (3, 'Team-oriented', '#3e1fa8');
 
-insert into tags (tag_groups_id, users_id, name) values (2, 2, 'Mandatory');
+insert into tags (tag_groups_id, users_id, name) values (null, 2, 'Mandatory');
 insert into tags (tag_groups_id, users_id, name) values (2, 1, 'interactive');
-insert into tags (tag_groups_id, users_id, name) values (2, 1, 'grid-enabled');
+insert into tags (tag_groups_id, users_id, name) values (null, 1, 'grid-enabled');
 insert into tags (tag_groups_id, users_id, name) values (5, 1, 'Monitored');
 insert into tags (tag_groups_id, users_id, name) values (5, 2, 'Multi-channelled');
-insert into tags (tag_groups_id, users_id, name) values (5, 1, 'knowledge user');
+insert into tags (tag_groups_id, users_id, name) values (null, 1, 'knowledge user');
 insert into tags (tag_groups_id, users_id, name) values (4, 3, 'discrete');
-insert into tags (tag_groups_id, users_id, name) values (2, 1, 'full-range');
-insert into tags (tag_groups_id, users_id, name) values (5, 2, 'optimal');
+insert into tags (tag_groups_id, users_id, name) values (null, 1, 'full-range');
+insert into tags (tag_groups_id, users_id, name) values (null, 2, 'optimal');
 insert into tags (tag_groups_id, users_id, name) values (5, 2, 'local area network');
 insert into tags (tag_groups_id, users_id, name) values (4, 2, 'help-desk');
 insert into tags (tag_groups_id, users_id, name) values (4, 3, 'Inverse');
-insert into tags (tag_groups_id, users_id, name) values (5, 3, 'approach');
-insert into tags (tag_groups_id, users_id, name) values (4, 2, 'concept');
-insert into tags (tag_groups_id, users_id, name) values (4, 3, 'Ameliorated');
-insert into tags (tag_groups_id, users_id, name) values (6, 1, 'monitoring');
-insert into tags (tag_groups_id, users_id, name) values (5, 2, 'responsive');
-insert into tags (tag_groups_id, users_id, name) values (2, 1, 'capacity');
+insert into tags (tag_groups_id, users_id, name) values (null, 3, 'approach');
+insert into tags (tag_groups_id, users_id, name) values (null, 2, 'concept');
+insert into tags (tag_groups_id, users_id, name) values (null, 3, 'Ameliorated');
+insert into tags (tag_groups_id, users_id, name) values (null, 1, 'monitoring');
+insert into tags (tag_groups_id, users_id, name) values (null, 2, 'responsive');
+insert into tags (tag_groups_id, users_id, name) values (null, 1, 'capacity');
 insert into tags (tag_groups_id, users_id, name) values (6, 1, 'zero defect');
 insert into tags (tag_groups_id, users_id, name) values (6, 2, 'data-warehouse');
 insert into tags (tag_groups_id, users_id, name) values (6, 2, 'empowering');
 insert into tags (tag_groups_id, users_id, name) values (2, 3, 'De-engineered');
-insert into tags (tag_groups_id, users_id, name) values (1, 3, 'toolset');
-insert into tags (tag_groups_id, users_id, name) values (5, 2, 'Grass-roots');
+insert into tags (tag_groups_id, users_id, name) values (null, 3, 'toolset');
+insert into tags (tag_groups_id, users_id, name) values (null, 2, 'Grass-roots');
 insert into tags (tag_groups_id, users_id, name) values (3, 2, 'zero administration');
 insert into tags (tag_groups_id, users_id, name) values (6, 2, 'optimizing');
-insert into tags (tag_groups_id, users_id, name) values (3, 1, 'user-facing');
+insert into tags (tag_groups_id, users_id, name) values (null, 1, 'user-facing');
 insert into tags (tag_groups_id, users_id, name) values (1, 3, 'neutral');
 insert into tags (tag_groups_id, users_id, name) values (5, 3, 'Public-key');
-insert into tags (tag_groups_id, users_id, name) values (1, 2, 'bi-directional');
+insert into tags (tag_groups_id, users_id, name) values (null, 2, 'bi-directional');
 
 UPDATE tags t SET users_id = (SELECT tg.users_id from tag_groups tg where tg.id = t.tag_groups_id);
 
@@ -168,8 +169,8 @@ insert into playlists (users_id) values (2);
 insert into playlists (users_id) values (3);
 insert into playlists (users_id) values (3);
 
-insert into events (playlist_id, name, start_date, end_date, description) values (16, 'encoding', '2021-07-27', '2021-08-10', 'Donec dapibus. Duis at velit eu est congue elementum. In hac habitasse platea dictumst. Morbi vestibulum, velit id pretium iaculis, diam erat fermentum justo, nec condimentum neque sapien placerat ante. Nulla justo. Aliquam quis turpis eget elit sodales scelerisque. Mauris sit amet eros. Suspendisse accumsan tortor quis turpis. Sed ante. Vivamus tortor.');
-insert into events (playlist_id, name, start_date, end_date, description) values (null, 'Seamless', null, null, 'Nam congue, risus semper porta volutpat, quam pede lobortis ligula, sit amet eleifend pede libero quis orci. Nullam molestie nibh in lectus. Pellentesque at nulla. Suspendisse potenti. Cras in purus eu magna vulputate luctus. Cum sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Vivamus vestibulum sagittis sapien. Cum sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus.');
+insert into events (playlist_id, name, start_date, end_date, description) values (1, 'encoding', '2021-07-27', '2021-08-10', 'Donec dapibus. Duis at velit eu est congue elementum. In hac habitasse platea dictumst. Morbi vestibulum, velit id pretium iaculis, diam erat fermentum justo, nec condimentum neque sapien placerat ante. Nulla justo. Aliquam quis turpis eget elit sodales scelerisque. Mauris sit amet eros. Suspendisse accumsan tortor quis turpis. Sed ante. Vivamus tortor.');
+insert into events (playlist_id, name, start_date, end_date, description) values (10, 'Seamless', null, null, 'Nam congue, risus semper porta volutpat, quam pede lobortis ligula, sit amet eleifend pede libero quis orci. Nullam molestie nibh in lectus. Pellentesque at nulla. Suspendisse potenti. Cras in purus eu magna vulputate luctus. Cum sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Vivamus vestibulum sagittis sapien. Cum sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus.');
 insert into events (playlist_id, name, start_date, end_date, description) values (4, 'data-warehouse', '2021-11-19', '2021-04-16', null);
 insert into events (playlist_id, name, start_date, end_date, description) values (null, 'secured line', null, null, 'Etiam pretium iaculis justo. In hac habitasse platea dictumst. Etiam faucibus cursus urna. Ut tellus.');
 insert into events (playlist_id, name, start_date, end_date, description) values (1, 'Horizontal', '2021-12-22', '2021-08-28', null);
@@ -691,9 +692,9 @@ USING
     JOIN songs s ON st.songs_id = s.id
     WHERE
         t.users_id <> s.users_id
-) not_qual
+) not_equal
 WHERE
-    songs_tags.songs_id = not_qual.songs_id AND songs_tags.tags_id = not_qual.tags_id
+    songs_tags.songs_id = not_equal.songs_id AND songs_tags.tags_id = not_equal.tags_id
 ;
 
 insert into songs_authors (songs_id, authors_id) values (17, 15);
@@ -809,8 +810,65 @@ USING
     JOIN songs s ON sa.songs_id = s.id
     WHERE
         a.users_id <> s.users_id
-) not_qual
+) not_equal
 WHERE
-    songs_authors.songs_id = not_qual.songs_id AND songs_authors.authors_id = not_qual.authors_id
+    songs_authors.songs_id = not_equal.songs_id AND songs_authors.authors_id = not_equal.authors_id
 ;
 
+
+insert into permissions (name) values ('read');
+insert into permissions (name) values ('write');
+
+insert into roles (name) values ('owner');
+insert into roles (name) values ('guest');
+
+insert into roles_permissions (permissions_id, roles_id) values (1, 1);
+insert into roles_permissions (permissions_id, roles_id) values (2, 1);
+insert into roles_permissions (permissions_id, roles_id) values (1, 2);
+
+insert into users_permissions (users_id, events_id, Permissions_id) values (1, 1, 1);
+insert into users_permissions (users_id, events_id, Permissions_id) values (1, 1, 2);
+insert into users_permissions (users_id, events_id, Permissions_id) values (1, 2, 1);
+insert into users_permissions (users_id, events_id, Permissions_id) values (2, 1, 2);
+insert into users_permissions (users_id, events_id, Permissions_id) values (2, 2, 1);
+insert into users_permissions (users_id, events_id, Permissions_id) values (2, 2, 2);
+insert into users_permissions (users_id, events_id, Permissions_id) values (2, 3, 1);
+insert into users_permissions (users_id, events_id, Permissions_id) values (3, 3, 1);
+insert into users_permissions (users_id, events_id, Permissions_id) values (3, 3, 2);
+
+insert into set_elements (sets_id, "Order", song_id) values (2, 1, 22);
+insert into set_elements (sets_id, "Order", song_id) values (2, 2, 54);
+insert into set_elements (sets_id, "Order", song_id) values (2, 3, 18);
+insert into set_elements (sets_id, "Order", song_id) values (2, 4, 4);
+insert into set_elements (sets_id, "Order", song_id) values (2, 5, 8);
+
+insert into set_elements (sets_id, "Order", song_id) values (4, 1, 5);
+insert into set_elements (sets_id, "Order", song_id) values (4, 2, 13);
+insert into set_elements (sets_id, "Order", song_id) values (4, 3, 35);
+insert into set_elements (sets_id, "Order", song_id) values (4, 4, 41);
+insert into set_elements (sets_id, "Order", song_id) values (4, 5, 54);
+insert into set_elements (sets_id, "Order", song_id) values (4, 6, 56);
+insert into set_elements (sets_id, "Order", song_id) values (4, 7, 35);
+
+insert into set_elements (sets_id, "Order", song_id) values (5, 1, 29);
+insert into set_elements (sets_id, "Order", song_id) values (5, 2, 46);
+
+insert into set_elements (sets_id, "Order", song_id) values (13, 1, 17);
+
+insert into playlist_elements (playlist_id, "Order", song_id, sets_id, played) values (1, 1, 13, null, FALSE);
+insert into playlist_elements (playlist_id, "Order", song_id, sets_id, played) values (1, 2, 29, null, FALSE);
+insert into playlist_elements (playlist_id, "Order", song_id, sets_id, played) values (1, 3, 32, null, FALSE);
+insert into playlist_elements (playlist_id, "Order", song_id, sets_id, played) values (1, 4, 54, null, FALSE);
+insert into playlist_elements (playlist_id, "Order", song_id, sets_id, played) values (1, 5, null, 4, FALSE);
+insert into playlist_elements (playlist_id, "Order", song_id, sets_id, played) values (1, 6, 41, null, FALSE);
+insert into playlist_elements (playlist_id, "Order", song_id, sets_id, played) values (1, 7, 54, null, FALSE);
+insert into playlist_elements (playlist_id, "Order", song_id, sets_id, played) values (1, 8, 29, null, FALSE);
+insert into playlist_elements (playlist_id, "Order", song_id, sets_id, played) values (1, 9, null, 5, FALSE);
+insert into playlist_elements (playlist_id, "Order", song_id, sets_id, played) values (1, 10, 8, null, FALSE);
+
+insert into playlist_elements (playlist_id, "Order", song_id, sets_id, played) values (10, 1, null, 2, FALSE);
+insert into playlist_elements (playlist_id, "Order", song_id, sets_id, played) values (10, 2, 2, null, FALSE);
+insert into playlist_elements (playlist_id, "Order", song_id, sets_id, played) values (10, 3, 7, null, FALSE);
+insert into playlist_elements (playlist_id, "Order", song_id, sets_id, played) values (10, 4, 17, null, FALSE);
+insert into playlist_elements (playlist_id, "Order", song_id, sets_id, played) values (10, 5, null, 13, FALSE);
+insert into playlist_elements (playlist_id, "Order", song_id, sets_id, played) values (10, 6, 8, null, FALSE);

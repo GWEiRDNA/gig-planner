@@ -29,11 +29,11 @@ class _PlaylistState extends State<Playlist> {
         body: ListView.builder(
           itemCount: widget.playlist?.playlistElements.length,
           itemBuilder: (context, i) {
-            if(widget.playlist?.playlistElements[i] is SongModel){
-              return Song(ctl: widget.ctl, song: widget.playlist!.playlistElements[i] as SongModel);
+            if(widget.playlist?.playlistElements[i].element is SongModel){
+              return Song(ctl: widget.ctl, song: widget.playlist!.playlistElements[i].element as SongModel);
             }
             else{
-              return Set(ctl: widget.ctl, set: widget.playlist!.playlistElements[i] as SetModel);
+              return Set(ctl: widget.ctl, set: widget.playlist!.playlistElements[i].element as SetModel);
             }
           },
         ),

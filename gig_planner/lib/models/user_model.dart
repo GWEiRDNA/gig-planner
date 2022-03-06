@@ -2,6 +2,7 @@ import 'package:gig_planner_sketch/views/event_library/event.dart';
 import 'package:gig_planner_sketch/views/song_library/song.dart';
 import 'package:gig_planner_sketch/views/tags/tags_library.dart';
 import 'package:postgres/postgres.dart';
+import 'package:crypt/crypt.dart';
 import '../databaseOperations.dart';
 import '../queries/myQueriesList.dart';
 import 'models.dart';
@@ -31,11 +32,25 @@ class UserModel {
     initUser();
   }
 
+  static Future<UserModel?> login(PostgreSQLConnection connection, String email, String password) async {
+    final String passwordHash = Crypt.sha256(password, salt: 'v9SferVS2DklThF0').toString();
+    List<Map<String, Map<String, dynamic>>> results = await executeQuery(connection, loginQuery, {'@email': email, '@passwordHash': passwordHash});
+    if(results.isNotEmpty) {
+      return UserModel(results[0]['users']!['id'], results[0]['users']!['email'], results[0]['users']!['name'], connection);
+    } else {
+      return null;
+    }
+  }
+
   void initUser()
   {
     pullTagsGroups();
     pullTags();
+    pullAuthors();
     pullSongs();
+    pullSets();
+    pullPlaylists();
+    pullEvents();
   }
 
   Future<void> pullTagsGroups() async {
@@ -51,6 +66,15 @@ class UserModel {
     _tags.clear();
     for (final row in results) {
       _tags.add(TagModel(id: row['tags']!['id'], name: row['tags']!['name'], userId: row['tags']!['users_id'], tagGroupId: row['tags']!['tag_groups_id']));
+    }
+  }
+
+  Future<void> pullAuthors() async {
+    List<Map<String, Map<String, dynamic>>> results = await executeQuery(_connection, selectAuthorsQuery, {'@userId': _id});
+    //_authors.clear();
+    for (final row in results) {
+     // _authors.add(TagModel(id: row['tags']!['id'], name: row['tags']!['name'], userId: row['tags']!['users_id'], tagGroupId: row['tags']!['tag_groups_id']));
+      print(row);
     }
   }
 
@@ -72,9 +96,6 @@ class UserModel {
         //   authorsIds.add(int.parse(strId));
         // }
       }
-      print(row);
-      print(tagIds);
-      print(authorsIds);
       _songs.add(SongModel(
         id: row['songs']!['id'],
         ownerId: row['songs']!['users_id'],
@@ -86,6 +107,70 @@ class UserModel {
         duration: row['songs']!['length'],
         tagIds: tagIds,
         authorIds: authorsIds
+      ));
+    }
+  }
+
+  Future<void> pullSets() async {
+    List<Map<String, Map<String, dynamic>>> results = await executeQuery(_connection, selectSetsQuery, {'@userId': _id});
+    _sets.clear();
+    for (final row in results) {
+      _sets.add(SetModel(id: row['sets']!['id'], name: row['sets']!['name'], userId: row['sets']!['users_id'], color: row['sets']!['color']));
+      if(row[''] != null && row['']!['songs'] != null) {
+        for (String sonstrId in row['']!['songs'].split(' ')) {
+          int songId = int.parse(sonstrId);
+          for (SongModel song in _songs) {
+            if (song.id == songId) {
+              _sets.last.songs.add(song);
+            }
+          }
+        }
+      }
+    }
+  }
+
+  Future<void> pullPlaylists() async {
+    List<Map<String, Map<String, dynamic>>> results = await executeQuery(_connection, selectPlaylistsQuery, {'@userId': _id});
+    _playlists.clear();
+    for (final row in results) {
+      _playlists.add(PlaylistModel(row['playlists']!['id'], row['playlists']!['users_id']));
+      if(row[''] != null && row['']!['elements'] != null) {
+        for (String elementStr in row['']!['elements'].split(' ')) {
+          List<String> elementArr = elementStr.split('|');
+          int id = int.parse(elementArr[0]);
+          String type = elementArr[1];
+          String played = elementArr[2];
+          if(type == "song") {
+            for (SongModel song in _songs) {
+              if (song.id == id) {
+                _playlists.last.playlistElements.add(PlaylistElementModel.song(song: song, played: played == "true"));
+              }
+            }
+          }
+          if(type == "set") {
+            for (SetModel set in _sets) {
+              if (set.id == id) {
+                _playlists.last.playlistElements.add(PlaylistElementModel.set(set: set, played: played == "true"));
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+
+  Future<void> pullEvents() async {
+    List<Map<String, Map<String, dynamic>>> results = await executeQuery(_connection, selectEventsQuery, {'@userId': _id});
+    _events.clear();
+    for (final row in results) {
+      _events.add(EventModel(
+          id: row['events']!['id'],
+          name: row['events']!['name'],
+          permissions: row['']!['permissions'],
+          startDate: row['events']!['start_date'].toString(),
+          endDate: row['events']!['end_date'].toString(),
+          description: row['events']!['description'],
+          playlist : _playlists[0]
       ));
     }
   }

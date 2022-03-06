@@ -14,20 +14,13 @@ late PostgreSQLConnection connection;
 late UserModel usr;
 
 Future<void> main() async {
-  //connect to database
-  ConnectionParameters connectionParameters = ConnectionParameters("10.0.2.2", 5432, "baza2", "postgres", "root");
-  connection = await connectToDatabase(connectionParameters);
+  ConnectionParameters connectionParameters = ConnectionParameters("10.0.2.2", 5432, "gigplanner", "postgres", "root");
+  String email = "marta@o2.pl";
+  String password = "abc123";
 
-  //user login
-  String email = "jcasetti0@delicious.com";
-  String passwordHash = "c352854ecf97cebf8d21f0f9da99ea89ea56e8a11c2945d85d58ce5d1d08e9a1"; //TODO add hashing function
-  List<Map<String, Map<String, dynamic>>> results = await executeQuery(connection, loginQuery, {'@email': email, '@passwordHash': passwordHash});
-  //get results
-  if(results.length > 0) {
-    usr = UserModel(results[0]['users']!['id'], results[0]['users']!['email'], results[0]['users']!['name'], connection);
-  } else {
-    return;
-  }
+  connection = await connectToDatabase(connectionParameters);
+  usr = (await UserModel.login(connection, email, password))!; //return null if user not exist or password wrong
+
   runApp(const MaterialApp(
     title: 'Gig-planner',
     home: MyApp(),

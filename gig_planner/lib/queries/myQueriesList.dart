@@ -90,8 +90,18 @@ String selectSetsQuery =
   SELECT 
     * 
   FROM 
-    sets
-  WHERE 
+    sets s
+    LEFT JOIN 
+    (
+      select
+        sets_id,
+        STRING_AGG(song_id::character varying, ' ' ORDER BY "Order") songs
+      FROM
+        set_elements
+      GROUP BY
+        sets_id
+    ) se ON se.sets_id = s.id
+  WHERE
     users_id = '@userId'
 """;
 
@@ -100,20 +110,45 @@ String selectPlaylistsQuery =
   SELECT 
     * 
   FROM 
-    playlists
+    playlists p
+    LEFT JOIN 
+    (
+      select
+        playlist_id,
+        STRING_AGG(
+          (COALESCE(song_id, sets_id, -100))::character varying 
+          || '|' || 
+          CASE WHEN song_id IS NOT NULL THEN 'song' WHEN sets_id IS NOT NULL THEN 'set' ELSE 'wrong' END
+          || '|' ||
+          played::character varying
+        , ' ' ORDER BY "Order") elements
+      FROM
+        playlist_elements
+      GROUP BY
+        playlist_id
+    ) pe ON pe.playlist_id = p.id
   WHERE 
     users_id = '@userId'
 """;
 
 String selectEventsQuery =
 """ 
-  SELECT 
-    * 
-  FROM 
-    users_permissions up
-    JOIN permissions p ON up.permissions_id = p.id
-    JOIN events e ON up.events_id = e.id
-    JOIN users u ON up.users_id = u.id
-  WHERE 
-    u.users_id = '@userId'
+  SELECT
+  *
+  FROM
+  events e
+  JOIN
+  (
+    SELECT 
+      e2.id,
+      STRING_AGG(p.name, ' ' ORDER BY p.name) permissions
+    FROM 
+      users_permissions up
+      JOIN permissions p ON up.permissions_id = p.id
+      JOIN events e2 ON up.events_id = e2.id
+    WHERE 
+      up.users_id = '@userId'
+    GROUP BY
+      e2.id
+   ) ep ON ep.id = e.id
 """;
