@@ -214,6 +214,14 @@ class Controller{
     user.authors.add(AuthorModel("A${NewId}", newAuthorName, user.id));
   }
 
+  void switchPlayed(PlaylistModel playlistModel, PlaylistElementModel playlistElement) {
+    if(playlistElement.played == true){
+      playlistElement.played = false;
+    }else{
+      playlistElement.played = true;
+    }
+  }
+
   //EVENTS
 
 }

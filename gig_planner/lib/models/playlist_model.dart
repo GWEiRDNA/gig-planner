@@ -30,4 +30,8 @@ class PlaylistElementModel{
   bool? get played => _played;
 
   dynamic get element => _element;
+
+  set played(bool? value) {
+    _played = value;
+  }
 }

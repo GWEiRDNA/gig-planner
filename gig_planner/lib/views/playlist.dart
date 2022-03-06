@@ -55,9 +55,17 @@ class _PlaylistState extends State<Playlist> {
           itemCount: widget.playlist?.playlistElements.length,
           itemBuilder: (context, i) {
             if (widget.playlist?.playlistElements[i].element is SongModel) {
-              return SongRepresentation(
-                  ctl: widget.ctl,
-                  song: widget.playlist!.playlistElements[i].element as SongModel, deleteSong: deleteSong);
+              return Column(
+                children: [
+                  Checkbox(value: widget.playlist!.playlistElements[i].played, onChanged: (played) {
+                    widget.ctl.switchPlayed(widget.playlist!, widget.playlist!.playlistElements[i]);
+                    setState(() {});
+                  },),
+                  SongRepresentation(
+                      ctl: widget.ctl,
+                      song: widget.playlist!.playlistElements[i].element as SongModel, deleteSong: deleteSong),
+                ],
+              );
             } else {
               return SetRepresentation(
                   ctl: widget.ctl,
@@ -81,7 +89,7 @@ class _PlaylistState extends State<Playlist> {
                                 (_) => SelectSong(ctl: widget.ctl, refreshCaller: addSong)
                                 )
                               );
-                            }
+                            },
                         ),
                         ElevatedButton(child: const Text("Add Set"),
                             onPressed: () {
@@ -108,12 +116,17 @@ class _PlaylistState extends State<Playlist> {
   }
 }
 
-class SongRepresentation extends StatelessWidget {
+class SongRepresentation extends StatefulWidget {
   final Controller ctl;
   final SongModel song;
   final Function deleteSong;
-  const SongRepresentation({required this.ctl, required this.song, required this.deleteSong, Key? key}) : super(key: key);
+  SongRepresentation({required this.ctl, required this.song, required this.deleteSong, Key? key}) : super(key: key);
 
+  @override
+  State<SongRepresentation> createState() => _SongRepresentationState();
+}
+
+class _SongRepresentationState extends State<SongRepresentation> {
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -129,12 +142,12 @@ class SongRepresentation extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             ListTile(
-              title: Text(song.title),
-              subtitle: Text(song.getAuthors().name),
+              title: Text(widget.song.title),
+              subtitle: Text(widget.song.getAuthors().name),
               enabled: true,
               trailing: IconButton(
                   onPressed: () {
-                    deleteSong(song);
+                    widget.deleteSong(widget.song);
                   },
                   icon: const Icon(Icons.delete)
               ),
@@ -157,24 +170,24 @@ class SongRepresentation extends StatelessWidget {
                   Column(
                       children: [
                         const Text("BPM"),
-                        if (song.bpm != null)
-                          Text(song.bpm.toString())
+                        if (widget.song.bpm != null)
+                          Text(widget.song.bpm.toString())
                         else
                           const Text(''),
                       ]),
                   Column(
                       children: [
                         const Text("Duration"),
-                        if (song.duration != null)
-                          Text(song.duration.toString())
+                        if (widget.song.duration != null)
+                          Text(widget.song.duration.toString())
                         else
                           const Text(''),
                       ]),
                   Column(
                       children: [
                         const Text("Released"),
-                        if (song.yearOfRelease != null)
-                          Text(song.yearOfRelease.toString())
+                        if (widget.song.yearOfRelease != null)
+                          Text(widget.song.yearOfRelease.toString())
                         else
                           const Text('')
                       ]),
