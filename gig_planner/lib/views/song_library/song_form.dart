@@ -72,6 +72,7 @@ class _SongFormState extends State<SongForm> {
             //Author
             ListTile(
               title: Text(author != null ? author!.name : "Select author"),
+              subtitle: const Text("Tap to change"),
               onTap: (){Navigator.push(
                 context,
                 MaterialPageRoute(builder: (_) => SelectAuthor(ctl: widget.ctl, refreshCaller: selectAuthor))
