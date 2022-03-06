@@ -19,11 +19,8 @@ class _SelectSongState extends State<SelectSong> {
   @override
   Widget build(BuildContext context) {
     songs = widget.ctl.user.songs;
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text("Select song"),
-      ),
-      body: ListView.builder(
+      return ListView.builder(
+          shrinkWrap: true,
           itemCount: songs.length,
           itemBuilder: (context, i){
             return ListTile(
@@ -35,7 +32,6 @@ class _SelectSongState extends State<SelectSong> {
               },
             );
           }
-      ),
-    );
+      );
   }
 }

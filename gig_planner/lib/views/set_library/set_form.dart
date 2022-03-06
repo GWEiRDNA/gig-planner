@@ -4,6 +4,7 @@ import 'package:gig_planner_sketch/views/song_library/select_song.dart';
 import '../../controllers/controller.dart';
 import '../../models/set_model.dart';
 import '../../models/song_model.dart';
+import '../song_library/select_proposed_song.dart';
 
 class SetForm extends StatefulWidget {
   final Controller ctl;
@@ -73,7 +74,18 @@ class _SetFormState extends State<SetForm> {
                   context,
                   MaterialPageRoute(
                       builder: (_) =>
-                          SelectSong(ctl: widget.ctl, refreshCaller: addSong)));
+                      Scaffold(
+                        appBar: AppBar(
+                          title: Text("Select Song")
+                        ),
+                        body: Column(
+                          children: [
+                            SelectProposedSong(ctl: widget.ctl, returnSong: addSong, songA: SongModel(id: "A1", title: "Title", ownerId: "U1")),
+                            SelectSong(ctl: widget.ctl, refreshCaller: addSong),
+                          ],
+                        ),
+                      )
+                  ));
             },
             leading: Icon(Icons.add),
             title: Text("Add New Song"),
