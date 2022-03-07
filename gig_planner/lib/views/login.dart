@@ -16,6 +16,14 @@ class _LoginViewState extends State<LoginView> {
   String eMail = "";
   String password = "";
 
+  showLoginDialog(String text){
+    showDialog(context: context, builder: (context){
+      return AlertDialog(
+        content: Text(text),
+      );
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -67,14 +75,14 @@ class _LoginViewState extends State<LoginView> {
                     MaterialPageRoute(builder: (_) => const MyApp())
                   );
                 }else{
-                  print("Login Error");
+                  showLoginDialog("Error");
                 }
               }, child: const Text("Login")),
               ElevatedButton(onPressed: (){
                 if(widget.logCtl.register(nick, eMail, password)){
-                  print("Registered");
+                  showLoginDialog("Registered");
                 }else{
-                  print("Register Error");
+                  showLoginDialog("Error");
                 }
               }, child: const Text("Register")),
             ],
