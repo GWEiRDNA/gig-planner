@@ -222,6 +222,12 @@ class Controller{
     }
   }
 
+  List<SongModel> getProposedSongs(SongModel songA) {
+    List<SongModel> proposedSongs = <SongModel>[];
+    proposedSongs.add(SongModel(id: "S5", title: "Brown Girl in the Ring", ownerId: "U1"));
+    return proposedSongs;
+  }
+
   //EVENTS
 
 }
