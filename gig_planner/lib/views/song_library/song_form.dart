@@ -3,6 +3,7 @@ import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:gig_planner_sketch/models/models.dart';
 import 'package:gig_planner_sketch/views/authors/select_author.dart';
+import 'package:gig_planner_sketch/views/song_library/song_lyrics.dart';
 import '../../controllers/controller.dart';
 
 class SongForm extends StatefulWidget {
@@ -86,11 +87,28 @@ class _SongFormState extends State<SongForm> {
               ),
             ),
             //Lyrics
-            Text("Lyrics"),
-            //Sheet Music
-            Text("Sheet Music"),
-            //Chords
-            Text("Chords"),
+            Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  ElevatedButton(
+                    onPressed: () {
+                      Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => Scaffold(
+                                  appBar: AppBar(
+                                      title: Text("${widget.song.title} lyrics")
+                                  ),
+                                  body: SongLyricsEdit(ctl: widget.ctl, song: widget.song)
+                              )
+                          )
+                      );
+                    },
+                    child: widget.song.lyrics == null ? const Text("Add Lyrics") : Text("Edit Lyrics"),
+                  ),
+                  ElevatedButton(onPressed: null, child: Text("Sheet Music")),
+                  ElevatedButton(onPressed: null, child: Text("Chords")),
+                ]),
             //BMP
             TextFormField(
               initialValue: bpm != null ? bpm.toString() : "",

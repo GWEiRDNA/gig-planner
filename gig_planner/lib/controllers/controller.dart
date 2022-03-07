@@ -228,6 +228,10 @@ class Controller{
     return proposedSongs;
   }
 
+  void updateLyrics(SongModel song, String lyrics) {
+    user.songs.firstWhere((s) => s.id == song.id).lyrics = lyrics;
+  }
+
   //EVENTS
 
 }

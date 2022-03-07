@@ -80,7 +80,10 @@ class _SetFormState extends State<SetForm> {
                         ),
                         body: Column(
                           children: [
-                            SelectProposedSong(ctl: widget.ctl, returnSong: addSong, songA: SongModel(id: "A1", title: "Title", ownerId: "U1")),
+                            if(songs.isNotEmpty)
+                              SelectProposedSong(ctl: widget.ctl,
+                                  returnSong: addSong,
+                                  songA: songs.last),
                             SelectSong(ctl: widget.ctl, refreshCaller: addSong),
                           ],
                         ),

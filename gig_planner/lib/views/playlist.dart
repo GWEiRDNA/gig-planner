@@ -67,9 +67,17 @@ class _PlaylistState extends State<Playlist> {
                 ],
               );
             } else {
-              return SetRepresentation(
-                  ctl: widget.ctl,
-                  set: widget.playlist!.playlistElements[i].element as SetModel, deleteSet: deleteSet,);
+              return Column(
+                children: [
+                  Checkbox(value: widget.playlist!.playlistElements[i].played, onChanged: (played) {
+                    widget.ctl.switchPlayed(widget.playlist!, widget.playlist!.playlistElements[i]);
+                    setState(() {});
+                  },),
+                  SetRepresentation(
+                      ctl: widget.ctl,
+                      set: widget.playlist!.playlistElements[i].element as SetModel, deleteSet: deleteSet,),
+                ],
+              );
             }
           },
         ),

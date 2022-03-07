@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:gig_planner_sketch/views/song_library/song_form.dart';
+import 'package:gig_planner_sketch/views/song_library/song_lyrics.dart';
 
 import '../../controllers/controller.dart';
 import '../../models/song_model.dart';
@@ -56,7 +57,22 @@ class _SongState extends State<Song> {
               child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    ElevatedButton(onPressed: () {}, child: Text("Lyrics")),
+                    ElevatedButton(
+                      onPressed: widget.song.lyrics == null ? null : () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => Scaffold(
+                              appBar: AppBar(
+                                title: Text("${widget.song.title} lyrics")
+                              ),
+                              body: SongLyrics(song: widget.song)
+                            )
+                          )
+                        );
+                      },
+                      child: const Text("Lyrics"),
+                    ),
                     ElevatedButton(onPressed: null, child: Text("Sheet Music")),
                     ElevatedButton(onPressed: null, child: Text("Chords")),
                   ]),
