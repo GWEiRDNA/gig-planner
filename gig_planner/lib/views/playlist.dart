@@ -9,7 +9,7 @@ import 'set_library/set.dart';
 
 class Playlist extends StatefulWidget {
   final Controller ctl;
-  final String eventId;
+  final int eventId;
   late final String eventName;
   PlaylistModel? playlist;
   Playlist({required this.ctl, required this.eventId, Key? key})

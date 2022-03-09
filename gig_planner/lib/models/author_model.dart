@@ -1,7 +1,7 @@
 class AuthorModel{
-  String id;
+  int id;
   String name;
-  String ownerId;
+  int? ownerId;
 
   AuthorModel(this.id, this.name, this.ownerId);
 }

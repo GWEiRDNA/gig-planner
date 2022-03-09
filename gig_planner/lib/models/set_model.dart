@@ -1,13 +1,11 @@
-import 'package:gig_planner_sketch/models/user_model.dart';
-
 import 'song_model.dart';
 
 class SetModel{
-  String id;
+  int id;
   String? name;
   String? color;
   List<SongModel> songs = <SongModel>[];
-  String userId;
+  int userId;
 
 
   SetModel({

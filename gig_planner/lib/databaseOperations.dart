@@ -1,6 +1,7 @@
-import 'package:flutter/material.dart';
+import 'package:crypt/crypt.dart';
+import 'package:gig_planner_sketch/queries/myQueriesList.dart';
 import 'package:postgres/postgres.dart';
-import 'dart:io';
+import 'models/user_model.dart';
 
 class ConnectionParameters
 {
@@ -19,10 +20,27 @@ Future<PostgreSQLConnection> connectToDatabase(ConnectionParameters params) asyn
   return connection;
 }
 
+Future<UserModel?> login(PostgreSQLConnection connection, String email, String password) async {
+  final String passwordHash = Crypt.sha256(password, salt: 'v9SferVS2DklThF0').toString();
+  List<Map<String, Map<String, dynamic>>> results = await executeQuery(connection, loginQuery, {'@email': email, '@passwordHash': passwordHash});
+  if(results.isNotEmpty) {
+    return UserModel(results[0]['users']!['id'], results[0]['users']!['email'], results[0]['users']!['name'], connection);
+  }
+  else {
+    return null;
+  }
+}
+
 Future<List<Map<String, Map<String, dynamic>>>> executeQuery(var connection, String query, Map<String, dynamic> queryArgs) async
 {
   for (final queryArgsName in queryArgs.keys) {
-    query = query.replaceAll(queryArgsName, queryArgs[queryArgsName].toString());
+    if(queryArgs[queryArgsName] == null) {
+      query = query.replaceAll(queryArgsName, "null");
+    }
+    else {
+      query = query.replaceAll(queryArgsName, "'" + queryArgs[queryArgsName].toString() + "'");
+    }
   }
+  print(query);
   return connection.mappedResultsQuery(query);
 }

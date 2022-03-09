@@ -2,17 +2,17 @@ import 'package:gig_planner_sketch/models/author_model.dart';
 import 'package:gig_planner_sketch/models/tag_model.dart';
 
 class SongModel {
-  String id;
-  String ownerId;
+  int id;
+  int ownerId;
   String title;
   String? album;
   int? yearOfRelease;
-  int? bpm;
+  double? bpm;
   String? lyrics;
   String? sheetMusic;
   String? mp3;
   String? duration;
-  String? authorIds;
+  List<AuthorModel> authors;
   List<TagModel> tags;
 
   SongModel({
@@ -25,11 +25,13 @@ class SongModel {
     this.lyrics,
     this.mp3,
     this.duration,
-    this.authorIds,
+    List<AuthorModel>? preAuthors,
     List<TagModel>? preTags,
-  }) : tags = preTags ?? [];
+  }) : tags = preTags ?? [], this.authors = preAuthors ?? [];
 
   AuthorModel getAuthors(){
-    return AuthorModel("000", "Unknown Author", "U1");
+    if(authors.isEmpty)
+      return AuthorModel(0, "Unknown Author", 1);
+    return authors[0];
   }
 }

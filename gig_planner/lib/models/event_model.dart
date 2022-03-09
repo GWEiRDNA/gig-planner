@@ -1,10 +1,7 @@
-import 'package:flutter/cupertino.dart';
 import 'package:gig_planner_sketch/models/models.dart';
 
-import 'user_model.dart';
-
 class EventModel {
-  String _id;
+  int _id;
   String _name;
   String _permissions; //From here you'll get users id
   String? _startDate;
@@ -13,7 +10,7 @@ class EventModel {
   PlaylistModel? _playlist;
 
   EventModel({
-    required String id,
+    required int id,
     required String name,
     required String permissions,
     String? startDate,
@@ -40,5 +37,5 @@ class EventModel {
 
   String get name => _name;
 
-  String get id => _id;
+  int get id => _id;
 }

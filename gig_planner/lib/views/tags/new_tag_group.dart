@@ -15,7 +15,7 @@ class TagGroupForm extends StatefulWidget {
 }
 
 class _TagGroupFormState extends State<TagGroupForm> {
-  String? id;
+  int? id;
   String name = "";
   String? color;
 

@@ -31,64 +31,67 @@ class _AuthorsLibraryState extends State<AuthorsLibrary> {
         appBar: AppBar(
           title: const Text("Your authors"),
         ),
-        body: Column(
-          children: [
-            TextFormField(
-              decoration: InputDecoration(
-                  hintText: "Add new Author",
-                  suffixIcon: IconButton(
-                    onPressed: () {
-                      if (newAuthorName != "") {
-                        widget.ctl.crateAuthor(newAuthorName);
-                        setState(() {});
-                      }
-                    },
-                    icon: const Icon(Icons.add),
-                  )),
-              onChanged: (text) {
-                newAuthorName = text;
-              },
-            ),
-            ListView.builder(
-              shrinkWrap: true,
-              itemCount: authors.length,
-              itemBuilder: (context, i) {
-                return ListTile(
-                  title: Text(authors[i].name),
-                  trailing: IconButton(
-                      icon: const Icon(Icons.delete),
+        body: SingleChildScrollView(
+          child: Column(
+            children: [
+              TextFormField(
+                decoration: InputDecoration(
+                    hintText: "Add new Author",
+                    suffixIcon: IconButton(
                       onPressed: () {
-                        widget.ctl.deleteAuthor(authors[i]);
-                        setState(() {});
-                      }),
-                  onTap: () {
-                    showDialog(
-                        context: context,
-                        builder: (context) => SimpleDialog(
-                              children: [
-                                TextFormField(
-                                  initialValue: authors[i].name,
-                                  onChanged: (text) {
-                                    authors[i].name = text;
-                                  },
-                                  decoration: InputDecoration(
-                                    suffixIcon: IconButton(
-                                      icon: const Icon(Icons.check),
-                                      onPressed: () {
-                                        widget.ctl.updateAuthor(
-                                            authors[i], authors[i].name);
-                                        Navigator.pop(context);
-                                      },
+                        if (newAuthorName != "") {
+                          widget.ctl.crateAuthor(newAuthorName);
+                          setState(() {});
+                        }
+                      },
+                      icon: const Icon(Icons.add),
+                    )),
+                onChanged: (text) {
+                  newAuthorName = text;
+                },
+              ),
+              ListView.builder(
+                primary: false,
+                shrinkWrap: true,
+                itemCount: authors.length,
+                itemBuilder: (context, i) {
+                  return ListTile(
+                    title: Text(authors[i].name),
+                    trailing: IconButton(
+                        icon: const Icon(Icons.delete),
+                        onPressed: () {
+                          widget.ctl.deleteAuthor(authors[i]);
+                          setState(() {});
+                        }),
+                    onTap: () {
+                      showDialog(
+                          context: context,
+                          builder: (context) => SimpleDialog(
+                                children: [
+                                  TextFormField(
+                                    initialValue: authors[i].name,
+                                    onChanged: (text) {
+                                      authors[i].name = text;
+                                    },
+                                    decoration: InputDecoration(
+                                      suffixIcon: IconButton(
+                                        icon: const Icon(Icons.check),
+                                        onPressed: () {
+                                          widget.ctl.updateAuthor(
+                                              authors[i], authors[i].name);
+                                          Navigator.pop(context);
+                                        },
+                                      ),
                                     ),
-                                  ),
-                                )
-                              ],
-                            ));
-                  },
-                );
-              },
-            ),
-          ],
+                                  )
+                                ],
+                              ));
+                    },
+                  );
+                },
+              ),
+            ],
+          ),
         ));
   }
 }

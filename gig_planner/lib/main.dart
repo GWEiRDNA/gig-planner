@@ -12,7 +12,17 @@ import 'models/models.dart';
 import 'databaseOperations.dart';
 import 'queries/myQueriesList.dart';
 
-void main() {
+late PostgreSQLConnection connection;
+late UserModel usr;
+
+Future<void> main() async {
+  ConnectionParameters connectionParameters = ConnectionParameters("10.0.2.2", 5432, "gigplanner", "postgres", "root");
+  String email = "marta@o2.pl";
+  String password = "abc123";
+
+  connection = await connectToDatabase(connectionParameters);
+  usr = (await login(connection, email, password))!; //return null if user not exist or password wrong
+
   runApp(const MaterialApp(
     title: 'Gig-planner',
     home: MyApp(),
@@ -24,7 +34,6 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    UserModel usr = UserModel.mock();
     Controller ctl = Controller(usr);
     List<String> fields = [
       "All Events",
