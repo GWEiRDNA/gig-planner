@@ -8,15 +8,15 @@ Relational diagram:
 ![Relational diagram.png](https://github.com/GWEiRDNA/gig-planner/blob/main/Relational%20diagram.png?raw=true)
 
 ## TODO
-- [ ] poprawić select rok piosenki
-- [ ] dodawanie/usuwanie z song_tags, songs_authors
+- [X] poprawić select rok piosenki
+- [x] dodawanie/usuwanie z song_tags, songs_authors
 - [ ] zmiana played
 - [ ] rejestracja
 - [ ] *tranzycje
 
 ### TODO+
-- [ ] check długość nazwy
-- [ ] check kolor
-- [ ] check playlist_elements
-- [ ] inny użytkownik
+- [x] check długość nazwy
+- [x] check kolor
+- [x] check playlist_elements
+- [x] inny użytkownik
 - [ ] procedura/funkcja
