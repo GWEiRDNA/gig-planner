@@ -20,7 +20,7 @@ Future<PostgreSQLConnection> connectToDatabase(ConnectionParameters params) asyn
   return connection;
 }
 
-Future<UserModel?> login(PostgreSQLConnection connection, String email, String password) async {
+Future<UserModel?> loginUser(PostgreSQLConnection connection, String email, String password) async {
   final String passwordHash = Crypt.sha256(password, salt: 'v9SferVS2DklThF0').toString();
   List<Map<String, Map<String, dynamic>>> results = await executeQuery(connection, loginQuery, {'@email': email, '@passwordHash': passwordHash});
   if(results.isNotEmpty) {
@@ -29,7 +29,7 @@ Future<UserModel?> login(PostgreSQLConnection connection, String email, String p
   return null;
 }
 
-Future<UserModel?> register(PostgreSQLConnection connection, String email, String password, String name) async {
+Future<UserModel?> registerUser(PostgreSQLConnection connection, String email, String password, String name) async {
   final String passwordHash = Crypt.sha256(password, salt: 'v9SferVS2DklThF0').toString();
   try {
     List<Map<String, Map<String, dynamic>>> results = await executeQuery(connection, registerQuery, {'@email': email, '@passwordHash': passwordHash, '@name': name});

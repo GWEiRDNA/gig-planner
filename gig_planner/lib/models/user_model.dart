@@ -471,15 +471,15 @@ class UserModel {
     }
   }
 
-  Future<bool> insertEvent(int? playListId, String name, String? startDate, String? endDate, String? description, [int? userId]) async {
-    userId ??= _id;
+  Future<bool> insertEvent(int? playListId, String name, String? startDate, String? endDate, String? description, [String? userName]) async {
+    userName ??= _nick;
     try {
       List<Map<String, Map<String, dynamic>>> results = await executeQuery(_connection, insertEventQuery, {'@playListId' : playListId, '@name' : name, '@startDate' : (startDate == '')? null: startDate, '@endDate' : (endDate == '')? null: endDate, '@description' : (description == '')? null: description});
       if(results.isEmpty) {return false;}
       int eventId = results.first['events']!['id'];
-      results = await executeQuery(_connection, insertPermissionsQuery, {'@userId' : userId, '@eventId' : eventId, '@permissionId' : 1}); //add read
+      results = await executeQuery(_connection, insertPermissionsQuery, {'@userName' : userName, '@eventId' : eventId, '@permissionName' : "read"}); //add read
       if(results.isEmpty) {return false;}
-      results = await executeQuery(_connection, insertPermissionsQuery, {'@userId' : userId, '@eventId' : eventId, '@permissionId' : 2}); //add write
+      results = await executeQuery(_connection, insertPermissionsQuery, {'@userName' : userName, '@eventId' : eventId, '@permissionName' : "write"}); //add write
       if(results.isEmpty) {return false;}
     } on Exception catch(e) {return false;}
     pullEvents();

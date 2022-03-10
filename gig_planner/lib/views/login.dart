@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:gig_planner_sketch/controllers/login_controller.dart';
+import 'package:gig_planner_sketch/models/user_model.dart';
 
 import '../main.dart';
 
@@ -68,19 +69,24 @@ class _LoginViewState extends State<LoginView> {
                   password = text;
                 },
               ),
-              ElevatedButton(onPressed: (){
-                if(widget.logCtl.login(eMail, password)){
+              ElevatedButton(onPressed: () async {
+                UserModel? user = await widget.logCtl.login(eMail, password);
+                if( user != null){
                   Navigator.push(
                     context,
-                    MaterialPageRoute(builder: (_) => const MyApp())
+                    MaterialPageRoute(builder: (_) => MyApp(usr: user))
                   );
                 }else{
                   showLoginDialog("Error");
                 }
               }, child: const Text("Login")),
-              ElevatedButton(onPressed: (){
-                if(widget.logCtl.register(nick, eMail, password)){
-                  showLoginDialog("Registered");
+              ElevatedButton(onPressed: () async {
+                UserModel? user = await widget.logCtl.register(nick, eMail, password);
+                if( user != null){
+                  Navigator.push(
+                      context,
+                      MaterialPageRoute(builder: (_) => MyApp(usr: user))
+                  );
                 }else{
                   showLoginDialog("Error");
                 }

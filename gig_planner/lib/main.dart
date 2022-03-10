@@ -9,24 +9,21 @@ import 'models/user_model.dart';
 import 'databaseOperations.dart';
 
 late PostgreSQLConnection connection;
-late UserModel usr;
 
 Future<void> main() async {
   ConnectionParameters connectionParameters = ConnectionParameters("10.0.2.2", 5432, "gigplanner", "appuser", "appuser");
-  String email = "marta@o2.pl";
-  String password = "abc123";
-
   connection = await connectToDatabase(connectionParameters);
-  usr = (await login(connection, email, password))!; //return null if user not exist or password wrong
+  LoginController con = LoginController(connection);
 
-  runApp(const MaterialApp(
+  runApp(MaterialApp(
     title: 'Gig-planner',
-    home: MyApp(),
+    home: LoginView(logCtl: con),
   ));
 }
 
 class MyApp extends StatelessWidget {
-  const MyApp({Key? key}) : super(key: key);
+  final UserModel usr;
+  const MyApp({required this.usr, Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -37,7 +34,6 @@ class MyApp extends StatelessWidget {
       "Set Library",
       "Tags",
       "Transitions",
-      "Login",
       "Authors"
     ];
 
@@ -98,18 +94,18 @@ class MyApp extends StatelessWidget {
               );
             }
           ),
+          // const Divider(),
+          // ListTile(
+          //   title: Text(fields[5]),
+          //     onTap: () {
+          //       Navigator.push(
+          //           context, MaterialPageRoute(builder: (_) => LoginView(logCtl: LoginController(),))
+          //       );
+          //     }
+          // ),
           const Divider(),
           ListTile(
             title: Text(fields[5]),
-              onTap: () {
-                Navigator.push(
-                    context, MaterialPageRoute(builder: (_) => LoginView(logCtl: LoginController(),))
-                );
-              }
-          ),
-          const Divider(),
-          ListTile(
-            title: Text(fields[6]),
             onTap: (){
               Navigator.push(context,
                 MaterialPageRoute(builder: (_) => AuthorsLibrary(ctl: ctl))
