@@ -86,7 +86,7 @@ class _SongState extends State<Song> {
                       children: [
                         const Text("BPM"),
                         if (widget.song.bpm != null)
-                          Text(widget.song.bpm.toString())
+                          Text( widget.song.bpm!.toStringAsFixed(widget.song.bpm!.truncateToDouble() == widget.song.bpm ? 0 : 2))
                         else
                           const Text(''),
                     ]),

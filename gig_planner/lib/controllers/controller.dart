@@ -1,21 +1,32 @@
-import 'package:gig_planner_sketch/views/playlist.dart';
-import 'package:gig_planner_sketch/views/tags/tags_library.dart';
-import 'dart:math';
-
 
 import '../models/models.dart';
 import '../models/user_model.dart';
 
 class Controller{
   UserModel user;
-
   SongModel? _selectedSong;
   SetModel? _selectedSet;
-
   Controller(this.user);
 
-  //Events
-  bool eventAvailable(String eventId){
+  //EVENTS
+  EventModel createBlankEvent() {
+    EventModel ev = EventModel(id: -1, name: "Event", permissions: "read write");
+    return ev;
+  }
+
+  Future<bool?> addEvent(EventModel ev) async {
+    return await user.insertEvent(ev.playlist?.id, ev.name, ev.startDate, ev.endDate, ev.description);
+  }
+
+  Future<bool> updateEvent(EventModel updatedEv) async {
+    return await user.updateEvent(updatedEv);
+  }
+
+  Future<bool> deleteEvent(EventModel event) async {
+    return await user.deleteEvent(event.id);
+  }
+
+  bool eventAvailable(int eventId){
     for(EventModel e in user.events){
       if(e.id == eventId){
         return true;
@@ -24,15 +35,15 @@ class Controller{
     return false;
   }
 
-  List<String> getEventsIds(){
-    List<String> eventIds = [];
+  List<int> getEventsIds(){
+    List<int> eventIds = [];
     for(EventModel e in user.events){
       eventIds.add(e.id);
     }
     return eventIds;
   }
 
-  String getEventName(String eventId){
+  String getEventName(int eventId){
     for(EventModel e in user.events){
       if(eventId == e.id){
         return e.name;
@@ -46,7 +57,7 @@ class Controller{
     return "w";
   }
 
-  PlaylistModel? getEventPlaylistModel(String eventId){
+  PlaylistModel? getEventPlaylistModel(int eventId){
     EventModel event = user.events.firstWhere((e) => e.id == eventId);
     return event.playlist;
   }
@@ -63,74 +74,118 @@ class Controller{
           return true;
         }
       default: {
-          return false;
+        return false;
       }
     }
   }
 
-  getSong(String songId) {
+  Future<PlaylistModel?> createBlankPlaylist(EventModel ev) async {
+    PlaylistModel? playlist = await user.insertPlaylist();
+    await user.updateEvent(EventModel(id: ev.id, playlist: playlist, name: ev.name, startDate: ev.startDate, endDate: ev.endDate, description: ev.description, permissions: ev.permissions));
+    ev.playlist = playlist;
+    return playlist;
+  }
+
+  List<String>? getEventsSharedEmails(EventModel curEvent) {
+    return curEvent.shared;
+  }
+
+  Future<bool> shareEventToUser(EventModel curEvent, String eMail) async {
+      return await user.insertPermission(curEvent.id, "read", eMail);
+  }
+
+  Future<bool> unshareEvent(EventModel curEvent, String eMail) async {
+    return await user.deletePermission(curEvent.id, "read", eMail);
+  }
+
+  List<SongModel> getProposedSongs(SongModel songA) {
+    List<SongModel> proposedSongs = <SongModel>[]; //TODO
+    proposedSongs.add(SongModel(id: 5, title: "Brown Girl in the Ring", ownerId: 1));
+    return proposedSongs;
+  }
+
+
+  //TAGS
+  Future<bool> createNewTag(String name, int? groupId) async {
+    return await user.insertTag(name, groupId);
+  }
+
+  Future<bool> deleteTag(int id) async {
+    return await user.deleteTag(id);
+  }
+
+
+  //TAG GROUPS
+  Future<bool> createNewTagGroup(String name, String? color) async {
+    color ??= "#000000";
+    return await user.insertTagGroup(name, color);
+  }
+
+  Future<bool> updateTagGroup(TagGroupModel updatedTagGroup) async {
+    return await user.updateTagGroup(updatedTagGroup);
+  }
+
+  Future<bool> deleteTagGroup(TagGroupModel tagGroup) async {
+    return await user.deleteTagGroup(tagGroup.id);
+  }
+
+
+  //SONGS
+  SongModel createBlankSong() {
+    return SongModel(id: -1, title: "New Song", ownerId: user.id);
+  }
+
+  Future<bool> addSong(SongModel proposedSong) async {
+    List<TagModel> tags = [];
+    return await user.insertSong(
+        proposedSong.title,
+        proposedSong.album,
+        proposedSong.yearOfRelease,
+        proposedSong.bpm!,
+        proposedSong.lyrics,
+        proposedSong.sheetMusic,
+        proposedSong.mp3,
+        proposedSong.duration,
+        proposedSong.authors,
+        tags
+    );
+  }
+
+  Future<bool> updateSong(SongModel proposedSong) async {
+    return await user.updateSong(proposedSong);
+  }
+
+  getSong(int songId) {
     user.songs.firstWhere((song) => song.id == songId);
   }
 
-  getTransitions(){
-    return <TransitionModel>[TransitionModel(user.songs.first, user.songs.elementAt(2), 30, false)];
-  }
-
-  bool newSong(SongModel proposedSong){
-    user.songs.add(proposedSong);
-    return true;
-  }
-  bool updateSong(SongModel proposedSong){
-    user.songs.removeWhere((s) => s.id == proposedSong.id);
-    user.songs.add(proposedSong);
-    return true;
-  }
-
-  //TAGS
-    //TAGS
-  bool createNewTag(String name, String? groupId){
-    int NewId = Random().nextInt(2000000);
-    TagModel newTag = TagModel(id: "T${NewId}", name: name, userId: user.id, tagGroupId: groupId);
-    user.tags.add(newTag);
-    return true;
-  }
-
-  bool deleteTag(String id){
-    user.tags.removeWhere((tag) => tag.id == id);
-    return true;
-  }
-    //TAG GROUPS
-  bool createNewTagGroup(String name, String? color){
-    int NewId = Random().nextInt(2000000);
-    TagGroupModel newTagGroup = TagGroupModel(id: "TG${NewId}", userId: user.id, name: name, color: color);
-    user.tagGroups.add(newTagGroup);
-    return true;
-  }
-
-  bool updateTagGroup(TagGroupModel newTagGroup){
-    user.tagGroups.removeWhere((tagGroup) => tagGroup.id == newTagGroup.id);
-    user.tagGroups.add(newTagGroup);
-    return true;
-  }
-
-  bool deleteTagGroup(TagGroupModel tg){
-    user.tagGroups.removeWhere((tagGroup) => tagGroup.id == tg.id);
-    return true;
-  }
-
-  //SONGS
   void selectSong(SongModel song) {
     _selectedSong = song;
   }
 
   SongModel? get selectedSong => _selectedSong;
 
+  getTransitions(){
+    return <TransitionModel>[TransitionModel(user.songs.first, user.songs.elementAt(2), 30, false)];
+  }
+
+  Future<bool> updateLyrics(SongModel song, String lyrics) async {
+    return await user.updateSong(SongModel(id: song.id, title: song.title, album: song.album, yearOfRelease: song.yearOfRelease, bpm: song.bpm, lyrics: lyrics, mp3: song.mp3, duration: song.duration, ownerId: song.ownerId));
+  }
+
+
   //SETS
-  bool createSet(){
-    int NewId = Random().nextInt(2000000);
-    SetModel newSet = SetModel(id: "S${NewId}", userId: user.id, name: "Set");
-    user.sets.add(newSet);
-    return true;
+  Future<bool> createSet() async {
+    return await user.insertSet("Set", "#000000");
+  }
+
+  Future<bool> updateSetName(SetModel updatedSet, String? name) async {
+    return await user.updateSet(SetModel(id: updatedSet.id, name: name,userId: updatedSet.userId));
+  }
+
+  Future<bool> deleteSet(SetModel set) async {
+    user.sets.removeWhere((element) => element.id == set.id);
+    return await user.deleteSet(set.id);
   }
 
   void selectSet(SetModel value) {
@@ -139,99 +194,54 @@ class Controller{
 
   SetModel? get selectedSet => _selectedSet;
 
-  bool deleteSongFromSet(SetModel set, SongModel song) {
-    user.sets.firstWhere((sett) => sett.id == set.id).songs.removeWhere((oldSong) => oldSong.id == song.id);
+  Future<bool> addSongToSet(SetModel set, SongModel? selectedSong) async {
+    if(selectedSong != null) {
+      return await user.insertSetElement(set.id, selectedSong.id);
+    }
     return true;
   }
 
-  void addSongToSet(SetModel set, SongModel? selectedSong) {
-    if(SongModel != null) {
-      user.sets.firstWhere((sett) => sett.id == set.id).songs.add(selectedSong!);
-    }
+  Future<bool> deleteSongFromSet(SetModel set, SongModel song) async {
+    return await user.deleteSetElement(set.id, song.id);
   }
 
-  void updateSetName(SetModel updatedSet, String? name) {
-    if(name != null) {
-      user.sets.firstWhere((sett) => sett.id == updatedSet.id).name = name;
-    }
-  }
-
-  void deleteSet(SetModel set) {
-    user.sets.removeWhere((element) => element.id == set.id);
-  }
 
   //PLAYLISTS
-  void addSetToPlaylist(PlaylistModel playlist, SetModel selectedSet) {
-    PlaylistElementModel newSet = PlaylistElementModel.set(set: selectedSet);
-    user.playlists.firstWhere((p) => p.id == playlist.id).playlistElements.add(newSet);
+  Future<bool> addSongToPlaylist(PlaylistModel playlist, SongModel songModel) async {
+    return await user.insertPlaylistSong(playlist.id, songModel.id, false);
   }
 
-  void addSongToPlaylist(PlaylistModel playlistModel, SongModel songModel) {
-    PlaylistElementModel newSong = PlaylistElementModel.song(song: songModel);
-    user.playlists.firstWhere((p) => p.id == playlistModel.id).playlistElements.add(newSong);
+  Future<bool> deleteSongFromPlaylist(PlaylistModel playlist, SongModel songModel) async {
+    return await user.deletePlaylistSong(playlist.id, songModel.id);
   }
 
-  void deleteSongFromPlaylist(PlaylistModel playlistModel, SongModel songModel) {
-    user.playlists.firstWhere((p) => p.id == playlistModel.id).playlistElements.removeWhere((s) => s.id == songModel.id);
+  Future<bool> addSetToPlaylist(PlaylistModel playlist, SetModel selectedSet) async {
+    return await user.insertPlaylistSet(playlist.id, selectedSet.id, false);
   }
 
-  void deleteSetFromPlaylist(PlaylistModel playlistModel, SetModel set) {
-    user.playlists.firstWhere((p) => p.id == playlistModel.id).playlistElements.removeWhere((s) => s.id == set.id);
-  }
-
-  EventModel? createBlankEvent() {
-    int NewId = Random().nextInt(2000000);
-    EventModel ev = EventModel(id: "E${NewId}", name: "Event", permissions: "write");
-    user.events.add(ev);
-    return ev;
-  }
-
-  void updateEvent(EventModel updatedEv) {
-    user.events.removeWhere((ev) => ev.id == updatedEv.id);
-    user.events.add(updatedEv);
-  }
-
-  void deleteEvent(EventModel event) {
-    user.events.removeWhere((ev) => ev.id == event.id);
-  }
-
-  SongModel createBlankSong() {
-    int NewId = Random().nextInt(2000000);
-    return SongModel(id: "S${NewId}", title: "New Song", ownerId: user.id);
-  }
-
-  void deleteAuthor(AuthorModel author) {
-    user.authors.removeWhere((a) => a.id == author.id);
-  }
-
-  void updateAuthor(AuthorModel author, String text) {
-    user.authors.removeWhere((a) => a.id == author.id);
-    user.authors.add(AuthorModel(author.id, text, author.ownerId));
-  }
-
-  void crateAuthor(String newAuthorName) {
-    int NewId = Random().nextInt(2000000);
-    user.authors.add(AuthorModel("A${NewId}", newAuthorName, user.id));
+  Future<bool> deleteSetFromPlaylist(PlaylistModel playlist, SetModel set) async {
+    return await user.deletePlaylistSet(playlist.id, set.id);
   }
 
   void switchPlayed(PlaylistModel playlistModel, PlaylistElementModel playlistElement) {
-    if(playlistElement.played == true){
-      playlistElement.played = false;
-    }else{
-      playlistElement.played = true;
+    if(playlistElement.element is SongModel) {
+      user.updatePlaylistSong(playlistModel.id, playlistElement.id, (playlistElement.played == null)? false: !(playlistElement.played!));
+    }
+    else if(playlistElement.element is SetModel){
+      user.updatePlaylistSet(playlistModel.id, playlistElement.id, (playlistElement.played == null)? false: !(playlistElement.played!));
     }
   }
 
-  List<SongModel> getProposedSongs(SongModel songA) {
-    List<SongModel> proposedSongs = <SongModel>[];
-    proposedSongs.add(SongModel(id: "S5", title: "Brown Girl in the Ring", ownerId: "U1"));
-    return proposedSongs;
+  //AUTHORS
+  Future<bool> crateAuthor(String newAuthorName) async {
+    return await user.insertAuthor(newAuthorName);
   }
 
-  void updateLyrics(SongModel song, String lyrics) {
-    user.songs.firstWhere((s) => s.id == song.id).lyrics = lyrics;
+  Future<bool> updateAuthor(AuthorModel oldAuthor, String updatedName) async {
+    return await user.updateAuthor(AuthorModel(oldAuthor.id, updatedName, oldAuthor.ownerId));
   }
 
-  //EVENTS
-
+  Future<bool> deleteAuthor(AuthorModel author) async {
+    return await user.deleteAuthor(author.id);
+  }
 }

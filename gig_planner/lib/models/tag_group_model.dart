@@ -1,8 +1,7 @@
-import 'package:flutter/cupertino.dart';
 
 class TagGroupModel{
-  String id;
-  String userId;
+  int id;
+  int userId;
   String name;
   String? color;
 

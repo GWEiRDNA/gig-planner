@@ -2,17 +2,23 @@ import 'package:flutter/material.dart';
 import 'package:gig_planner_sketch/controllers/controller.dart';
 import 'package:gig_planner_sketch/controllers/login_controller.dart';
 import 'package:gig_planner_sketch/views/login.dart';
-import 'package:gig_planner_sketch/views/set_library/select_set.dart';
-import 'package:gig_planner_sketch/views/song_library/select_song.dart';
 import 'package:postgres/postgres.dart';
 import 'views/tags/tags_library.dart';
 import 'views/views.dart';
 import 'models/user_model.dart';
-import 'models/models.dart';
 import 'databaseOperations.dart';
-import 'queries/myQueriesList.dart';
 
-void main() {
+late PostgreSQLConnection connection;
+late UserModel usr;
+
+Future<void> main() async {
+  ConnectionParameters connectionParameters = ConnectionParameters("10.0.2.2", 5432, "gigplanner", "appuser", "appuser");
+  String email = "marta@o2.pl";
+  String password = "abc123";
+
+  connection = await connectToDatabase(connectionParameters);
+  usr = (await login(connection, email, password))!; //return null if user not exist or password wrong
+
   runApp(const MaterialApp(
     title: 'Gig-planner',
     home: MyApp(),
@@ -24,7 +30,6 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    UserModel usr = UserModel.mock();
     Controller ctl = Controller(usr);
     List<String> fields = [
       "All Events",
@@ -112,26 +117,6 @@ class MyApp extends StatelessWidget {
             },
           ),
           const Divider(),
-          // ListTile(
-          //     title: Text('execute myquery'),
-          //     onTap: () async {
-          //       //connect to database
-          //       ConnectionParameters connectionParameters = ConnectionParameters("10.0.2.2", 5432, "test4", "postgres", "root");
-          //       PostgreSQLConnection connection = await connectToDatabase(connectionParameters);
-          //
-          //       //execute query
-          //       int idmax = 30; //query argument nr 1
-          //       String name = 'user A'; //query argument nr 2
-          //       List<Map<String, Map<String, dynamic>>> results = await executeQuery(connection, myquery, {'@idmax': idmax, '@name': name});
-          //
-          //       //get results
-          //       print('results : ' + results.length.toString()); //row count
-          //       for (final row in results) {
-          //         print(row);
-          //         print(row['users']!['id'].toString() + ' : ' + row['users']!['name']); //extract values from row
-          //       }
-          //     }
-          // ),
         ],
       ),
     );

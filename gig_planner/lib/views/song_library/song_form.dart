@@ -25,7 +25,7 @@ class _SongFormState extends State<SongForm> {
   String? lyrics;
   String? sheetMusic;
   String? mp3;
-  int? bpm;
+  double? bpm;
   String? duration;
   int? released;
   List<TagModel> selectedTags = [];
@@ -48,7 +48,6 @@ class _SongFormState extends State<SongForm> {
       released = widget.song.yearOfRelease;
       author = widget.song.getAuthors();
       selectedTags = widget.song.tags;
-      //TODO: getAuthors
     }
   }
 
@@ -58,104 +57,150 @@ class _SongFormState extends State<SongForm> {
       appBar: AppBar(
         title: const Text("Add new song"),
       ),
-      body: Form(
-        child: Padding(
-          padding: const EdgeInsets.all(8.0),
-          child: Column(
-          children: [
-            //Title
-            TextFormField(
-              initialValue: title,
-              decoration: const InputDecoration(
-                hintText: "Title of the song",
+      body: SingleChildScrollView(
+        child: Form(
+          child: Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: Column(
+            children: [
+              //Title
+              TextFormField(
+                initialValue: title,
+                decoration: const InputDecoration(
+                  hintText: "Title of the song",
+                ),
+                onChanged: (text) {
+                  if(text == "") {
+                    title = "New song";
+                  }
+                  else {
+                    title = text;
+                  }
+                },
               ),
-            ),
-            //Author
-            ListTile(
-              title: Text(author != null ? author!.name : "Select author"),
-              subtitle: const Text("Tap to change"),
-              onTap: (){Navigator.push(
-                context,
-                MaterialPageRoute(builder: (_) => SelectAuthor(ctl: widget.ctl, refreshCaller: selectAuthor))
-              );}
-            ),
-            //Album
-            TextFormField(
-              initialValue: album,
-              decoration: const InputDecoration(
-                hintText: "Album of origin",
+              //Author
+              ListTile(
+                title: Text(author != null ? author!.name : "Select author"),
+                subtitle: const Text("Tap to change"),
+                onTap: (){Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (_) => SelectAuthor(ctl: widget.ctl, refreshCaller: selectAuthor))
+                );}
               ),
-            ),
-            //Lyrics
-            Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  ElevatedButton(
-                    onPressed: () {
-                      Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                              builder: (context) => Scaffold(
-                                  appBar: AppBar(
-                                      title: Text("${widget.song.title} lyrics")
-                                  ),
-                                  body: SongLyricsEdit(ctl: widget.ctl, song: widget.song)
-                              )
-                          )
-                      );
-                    },
-                    child: widget.song.lyrics == null ? const Text("Add Lyrics") : Text("Edit Lyrics"),
-                  ),
-                  ElevatedButton(onPressed: null, child: Text("Sheet Music")),
-                  ElevatedButton(onPressed: null, child: Text("Chords")),
-                ]),
-            //BMP
-            TextFormField(
-              initialValue: bpm != null ? bpm.toString() : "",
-              decoration: const InputDecoration(
-                hintText: "Tempo in BPM ex. 140",
+              //Album
+              TextFormField(
+                initialValue: album,
+                decoration: const InputDecoration(
+                  hintText: "Album of origin",
+                ),
+                onChanged: (text) {
+                  if(text == "") {
+                    album = null;
+                  }
+                  else {
+                    album = text;
+                  }
+                },
               ),
-            ),
-            //Duration
-            TextFormField(
-              initialValue: duration,
-              decoration: const InputDecoration(
-                hintText: "Song duration ex. 3:07",
+              //Lyrics
+              Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    ElevatedButton(
+                      onPressed: () {
+                        Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) => Scaffold(
+                                    appBar: AppBar(
+                                        title: Text("${widget.song.title} lyrics")
+                                    ),
+                                    body: SongLyricsEdit(ctl: widget.ctl, song: widget.song)
+                                )
+                            )
+                        );
+                      },
+                      child: widget.song.lyrics == null ? const Text("Add Lyrics") : Text("Edit Lyrics"),
+                    ),
+                    ElevatedButton(onPressed: null, child: Text("Sheet Music")),
+                    ElevatedButton(onPressed: null, child: Text("Chords")),
+                  ]),
+              //BMP
+              TextFormField(
+                initialValue: bpm != null ? bpm?.toStringAsFixed(bpm?.truncateToDouble() == bpm ? 0 : 2) : "",
+                decoration: const InputDecoration(
+                  hintText: "Tempo in BPM ex. 140",
+                ),
+                onChanged: (text) {
+                  if(text == "") {
+                    bpm = null;
+                  }
+                  else {
+                    bpm = double.parse(text);
+                  }
+                },
               ),
-            ),
-            //Released
-            TextFormField(
-              initialValue: released != null ? released.toString() : "",
-              decoration: const InputDecoration(
-                hintText: "Year of release ex. 1924",
+              //Duration
+              TextFormField(
+                initialValue: duration,
+                decoration: const InputDecoration(
+                  hintText: "Song duration ex. 3:07",
+                ),
+                onChanged: (text) {
+                  if(text == "") {
+                    duration = null;
+                  } 
+                  else {
+                    duration = text;
+                  }
+                },
               ),
-            ),
-            TagsView(ctl: widget.ctl, song: widget.song, selTags: selectedTags),
-            ElevatedButton(
-                onPressed: (){
-              final proposedSong = SongModel(
-                id: widget.song.id,
-                title: title,
-                ownerId: widget.ctl.user.id,
-                album: album,
-                yearOfRelease: released,
-                bpm: bpm,
-                lyrics: lyrics,
-                mp3: mp3,
-                duration: duration,
-                authorIds: author != null ? author!.id : null,
-                preTags: selectedTags,
-              );
-              if(widget.isUpdated && widget.ctl.updateSong(proposedSong)) {
-                Navigator.pop(context);
-              }
-              if(!widget.isUpdated && widget.ctl.newSong(proposedSong)) {
-                Navigator.pop(context);
-              }
-            }, child: const Icon(Icons.check)),
-          ],
+              //Released
+              TextFormField(
+                initialValue: released != null ? released.toString() : "",
+                decoration: const InputDecoration(
+                  hintText: "Year of release ex. 1924",
+                ),
+                onChanged: (text) {
+                  if(text == "") {
+                    released = null;
+                  }
+                  else {
+                    released = int.parse(text);
+                  }
+                },
+              ),
+              TagsView(ctl: widget.ctl, song: widget.song, selTags: selectedTags),
+              ElevatedButton(
+                  onPressed: () async {
+                    List<AuthorModel> authors = [];
+                    if(author != null) {
+                      authors.add(author!);
+                    }
+                final proposedSong = SongModel(
+                  id: widget.song.id,
+                  title: title,
+                  ownerId: widget.ctl.user.id,
+                  album: album,
+                  yearOfRelease: released,
+                  bpm: bpm,
+                  lyrics: lyrics,
+                  mp3: mp3,
+                  duration: duration,
+                  preAuthors: authors,
+                  preTags: selectedTags,
+                );
+                if(widget.isUpdated && await widget.ctl.updateSong(proposedSong)) {
+                  Navigator.pop(context);
+                }
+                if(!widget.isUpdated && await widget.ctl.addSong(proposedSong)) {
+                  Navigator.pop(context);
+                }
+              }, child: const Icon(Icons.check)),
+            ],
+        ),
+          )),
       ),
-        )),
     );
   }
 }
@@ -177,6 +222,7 @@ class _TagsViewState extends State<TagsView> {
   Widget build(BuildContext context) {
     tagGroups = widget.ctl.user.tagGroups;
     return ListView.builder(
+      primary: false,
       shrinkWrap: true,
       itemCount: tagGroups.length + 1,
       itemBuilder: (context, i) {

@@ -14,6 +14,7 @@ class CreateEvent extends StatefulWidget {
 }
 
 class _CreateEventState extends State<CreateEvent> {
+  bool isUpdated = false;
   String name = "";
   String? startDate = "";
   String? endDate = "";
@@ -24,6 +25,7 @@ class _CreateEventState extends State<CreateEvent> {
     // TODO: implement initState
     super.initState();
     if(widget.ev != null){
+      isUpdated = true;
       name = widget.ev!.name;
       startDate = widget.ev!.startDate ?? "";
       endDate = widget.ev!.endDate ?? "";
@@ -85,7 +87,12 @@ class _CreateEventState extends State<CreateEvent> {
               ElevatedButton(
                   onPressed: (){
                     EventModel updatedEv = EventModel(id: widget.ev!.id, name: name, permissions: widget.ev!.permissions, description: description, endDate: endDate, startDate: startDate);
-                    widget.ctl.updateEvent(updatedEv);
+                    if(isUpdated) {
+                      widget.ctl.updateEvent(updatedEv);
+                    }
+                    else {
+                      widget.ctl.addEvent(updatedEv);
+                    }
                     setState(() {});
                     Navigator.pop(context);
                   },

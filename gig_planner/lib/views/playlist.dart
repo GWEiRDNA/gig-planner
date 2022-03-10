@@ -9,13 +9,18 @@ import 'set_library/set.dart';
 
 class Playlist extends StatefulWidget {
   final Controller ctl;
-  final String eventId;
+  final int eventId;
+  late EventModel curEvent;
   late final String eventName;
   PlaylistModel? playlist;
-  Playlist({required this.ctl, required this.eventId, Key? key})
+  Playlist({required PlaylistModel? newPlaylist, required this.ctl, required this.eventId, Key? key})
       : super(key: key) {
     this.playlist = ctl.getEventPlaylistModel(eventId);
     this.eventName = ctl.getEventName(eventId);
+    this.curEvent = ctl.user.events.firstWhere((e) => e.id == eventId);
+    if (playlist == null) {
+      this.playlist = newPlaylist!;
+    }
   }
 
   @override
@@ -23,6 +28,15 @@ class Playlist extends StatefulWidget {
 }
 
 class _PlaylistState extends State<Playlist> {
+  late List<String> eMails;
+  String newMail = "";
+
+  @override
+  initState() {
+    super.initState();
+    eMails = widget.ctl.getEventsSharedEmails(widget.curEvent)!;
+  }
+
   addSong() {
     widget.ctl.addSongToPlaylist(widget.playlist!, widget.ctl.selectedSong!);
     setState(() {});
@@ -33,94 +47,144 @@ class _PlaylistState extends State<Playlist> {
     setState(() {});
   }
 
-  deleteSong(SongModel song){
+  deleteSong(SongModel song) {
     widget.ctl.deleteSongFromPlaylist(widget.playlist!, song);
-    setState((){});
+    setState(() {});
   }
 
-  deleteSet(SetModel set){
+  deleteSet(SetModel set) {
     widget.ctl.deleteSetFromPlaylist(widget.playlist!, set);
-    setState((){});
+    setState(() {});
   }
 
   @override
   Widget build(BuildContext context) {
-    if (widget.playlist != null) {
-      widget.playlist = widget.ctl.user.playlists.firstWhere((p) => p.id == widget.playlist!.id);
-      return Scaffold(
-        appBar: AppBar(
-          title: Text(widget.eventName),
-        ),
-        body: ListView.builder(
-          itemCount: widget.playlist?.playlistElements.length,
+    widget.playlist = widget.ctl.user.playlists
+        .firstWhere((p) => p.id == widget.playlist!.id);
+    eMails = widget.ctl.getEventsSharedEmails(widget.curEvent)!;
+    newMail = "";
+    return Scaffold(
+      endDrawer: Drawer(
+        child: ListView.builder(
+          itemCount: eMails.length + 1,
           itemBuilder: (context, i) {
-            if (widget.playlist?.playlistElements[i].element is SongModel) {
-              return Column(
-                children: [
-                  Checkbox(value: widget.playlist!.playlistElements[i].played, onChanged: (played) {
-                    widget.ctl.switchPlayed(widget.playlist!, widget.playlist!.playlistElements[i]);
+            if (i < eMails.length) {
+              return ListTile(
+                title: Text(eMails[i]),
+                trailing: IconButton(
+                  icon: const Icon(Icons.delete),
+                  onPressed: () {
+                    widget.ctl.unshareEvent(widget.curEvent, eMails[i]);
                     setState(() {});
-                  },),
-                  SongRepresentation(
-                      ctl: widget.ctl,
-                      song: widget.playlist!.playlistElements[i].element as SongModel, deleteSong: deleteSong),
-                ],
+                  },
+                ),
               );
             } else {
-              return Column(
-                children: [
-                  Checkbox(value: widget.playlist!.playlistElements[i].played, onChanged: (played) {
-                    widget.ctl.switchPlayed(widget.playlist!, widget.playlist!.playlistElements[i]);
-                    setState(() {});
-                  },),
-                  SetRepresentation(
-                      ctl: widget.ctl,
-                      set: widget.playlist!.playlistElements[i].element as SetModel, deleteSet: deleteSet,),
-                ],
+              return TextFormField(
+                decoration: InputDecoration(
+                  hintText: "To add user write his name",
+                  suffixIcon: IconButton(
+                    onPressed: () async {
+                      if (await widget.ctl.shareEventToUser(widget.curEvent, newMail)) {
+                        setState(() {});
+                      } else {
+                        showDialog(
+                            context: context,
+                            builder: (_) => const AlertDialog(title: Text("Wrong user name.")));
+                      }
+                    },
+                    icon: const Icon(Icons.add),
+                  ),
+                ),
+                onChanged: (text) {
+                  newMail = text;
+                },
               );
             }
           },
         ),
-        floatingActionButton: FloatingActionButton(
-          backgroundColor: Colors.blue,
-          child: const Icon(Icons.add),
-          onPressed: () {
-            showDialog(
-                context: context,
-                builder: (context) => SimpleDialog(
-                      children: [
-                        ElevatedButton(
-                          child: const Text("Add Song"),
-                            onPressed: () {
-                              Navigator.push(context,
-                                MaterialPageRoute(builder:
-                                (_) => SelectSong(ctl: widget.ctl, refreshCaller: addSong)
-                                )
-                              );
-                            },
-                        ),
-                        ElevatedButton(child: const Text("Add Set"),
-                            onPressed: () {
-                          Navigator.push(context,
-                            MaterialPageRoute(builder: (_) => SelectSet(ctl: widget.ctl, returnSet: addSet))
-                          );
-                            })
-                      ],
-                    ));
-          },
-        ),
-      );
-    } else {
-      return Center(
-        child: Column(
-          children: [
-            const Text("Playlist for this event doesn't exist"),
-            ElevatedButton(
-                onPressed: () {}, child: const Text("Create new playlist"))
-          ],
-        ),
-      );
-    }
+      ),
+      appBar: AppBar(
+        title: Text(widget.eventName),
+      ),
+      body: ListView.builder(
+        itemCount: widget.playlist?.playlistElements.length,
+        itemBuilder: (context, i) {
+          if (widget.playlist?.playlistElements[i].element is SongModel) {
+            return Column(
+              children: [
+                Checkbox(
+                  value: widget.playlist!.playlistElements[i].played,
+                  onChanged: (played) {
+                    widget.ctl.switchPlayed(
+                        widget.playlist!, widget.playlist!.playlistElements[i]);
+                    setState(() {});
+                  },
+                ),
+                SongRepresentation(
+                    ctl: widget.ctl,
+                    song: widget.playlist!.playlistElements[i].element
+                        as SongModel,
+                    deleteSong: deleteSong),
+              ],
+            );
+          } else {
+            return Column(
+              children: [
+                Checkbox(
+                  value: widget.playlist!.playlistElements[i].played,
+                  onChanged: (played) {
+                    widget.ctl.switchPlayed(
+                        widget.playlist!, widget.playlist!.playlistElements[i]);
+                    setState(() {});
+                  },
+                ),
+                SetRepresentation(
+                  ctl: widget.ctl,
+                  set: widget.playlist!.playlistElements[i].element as SetModel,
+                  deleteSet: deleteSet,
+                ),
+              ],
+            );
+          }
+        },
+      ),
+      floatingActionButton: FloatingActionButton(
+        backgroundColor: Colors.blue,
+        child: const Icon(Icons.add),
+        onPressed: () {
+          showDialog(
+              context: context,
+              builder: (context) => SimpleDialog(
+                    children: [
+                      ElevatedButton(
+                        child: const Text("Add Song"),
+                        onPressed: () {
+                          Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (_) => Scaffold(
+                                      appBar:
+                                          AppBar(title: Text("Select Song")),
+                                      body: SelectSong(
+                                          ctl: widget.ctl,
+                                          refreshCaller: addSong))));
+                        },
+                      ),
+                      ElevatedButton(
+                          child: const Text("Add Set"),
+                          onPressed: () {
+                            Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (_) => SelectSet(
+                                        ctl: widget.ctl, returnSet: addSet)));
+                          })
+                    ],
+                  ));
+        },
+      ),
+    );
   }
 }
 
@@ -128,7 +192,12 @@ class SongRepresentation extends StatefulWidget {
   final Controller ctl;
   final SongModel song;
   final Function deleteSong;
-  SongRepresentation({required this.ctl, required this.song, required this.deleteSong, Key? key}) : super(key: key);
+  SongRepresentation(
+      {required this.ctl,
+      required this.song,
+      required this.deleteSong,
+      Key? key})
+      : super(key: key);
 
   @override
   State<SongRepresentation> createState() => _SongRepresentationState();
@@ -157,8 +226,7 @@ class _SongRepresentationState extends State<SongRepresentation> {
                   onPressed: () {
                     widget.deleteSong(widget.song);
                   },
-                  icon: const Icon(Icons.delete)
-              ),
+                  icon: const Icon(Icons.delete)),
             ),
             Padding(
               padding: const EdgeInsets.only(bottom: 8.0),
@@ -171,34 +239,32 @@ class _SongRepresentationState extends State<SongRepresentation> {
                   ]),
             ),
             Padding(
-              padding: const EdgeInsets.only(left: 16.0, right: 16.0, bottom: 8),
+              padding:
+                  const EdgeInsets.only(left: 16.0, right: 16.0, bottom: 8),
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  Column(
-                      children: [
-                        const Text("BPM"),
-                        if (widget.song.bpm != null)
-                          Text(widget.song.bpm.toString())
-                        else
-                          const Text(''),
-                      ]),
-                  Column(
-                      children: [
-                        const Text("Duration"),
-                        if (widget.song.duration != null)
-                          Text(widget.song.duration.toString())
-                        else
-                          const Text(''),
-                      ]),
-                  Column(
-                      children: [
-                        const Text("Released"),
-                        if (widget.song.yearOfRelease != null)
-                          Text(widget.song.yearOfRelease.toString())
-                        else
-                          const Text('')
-                      ]),
+                  Column(children: [
+                    const Text("BPM"),
+                    if (widget.song.bpm != null)
+                      Text(widget.song.bpm.toString())
+                    else
+                      const Text(''),
+                  ]),
+                  Column(children: [
+                    const Text("Duration"),
+                    if (widget.song.duration != null)
+                      Text(widget.song.duration.toString())
+                    else
+                      const Text(''),
+                  ]),
+                  Column(children: [
+                    const Text("Released"),
+                    if (widget.song.yearOfRelease != null)
+                      Text(widget.song.yearOfRelease.toString())
+                    else
+                      const Text('')
+                  ]),
                 ],
               ),
             ),
@@ -211,7 +277,9 @@ class SetRepresentation extends StatelessWidget {
   final Controller ctl;
   final SetModel set;
   final Function deleteSet;
-  const SetRepresentation({required this.ctl, required this.set, required this.deleteSet, Key? key}) : super(key: key);
+  const SetRepresentation(
+      {required this.ctl, required this.set, required this.deleteSet, Key? key})
+      : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -228,14 +296,13 @@ class SetRepresentation extends StatelessWidget {
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  if(set.name != null)
-                    Text(set.name!)
-                  else
-                    const Text("Set"),
+                  if (set.name != null) Text(set.name!) else const Text("Set"),
                   Row(children: [
-                    IconButton(onPressed: () {
-                      deleteSet(set);
-                    }, icon: const Icon(Icons.delete)),
+                    IconButton(
+                        onPressed: () {
+                          deleteSet(set);
+                        },
+                        icon: const Icon(Icons.delete)),
                   ])
                 ],
               ),
@@ -250,5 +317,3 @@ class SetRepresentation extends StatelessWidget {
     );
   }
 }
-
-

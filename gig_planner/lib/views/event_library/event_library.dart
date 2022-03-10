@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:gig_planner_sketch/controllers/controller.dart';
 import '../../models/event_model.dart';
+import '../../models/playlist_model.dart';
 import 'create_event.dart';
 import 'event.dart';
 import '../playlist.dart';
@@ -73,11 +74,15 @@ class _EventTileState extends State<EventTile> {
             MaterialPageRoute(builder: (_) => CreateEvent(ctl: widget.ctl, ev: widget.event,))
         );
       },
-      onTap: () {
+      onTap: () async {
         if(widget.ctl.eventAvailable(widget.event.id)){
+          PlaylistModel? newPlaylist;
+          if(widget.event.playlist == null) {
+            newPlaylist= (await widget.ctl.createBlankPlaylist(widget.event))!;
+          }
           Navigator.push(
               context, MaterialPageRoute(
-            builder:  (_) => Playlist(ctl: widget.ctl, eventId: widget.event.id),
+            builder:  (_) => Playlist(newPlaylist: newPlaylist, ctl: widget.ctl, eventId: widget.event.id),
           )
           );
         }else{

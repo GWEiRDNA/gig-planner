@@ -1,8 +1,8 @@
 class TagModel{
-  String id;
+  int id;
   String name;
-  String? tagGroupId;
-  String? userId;
+  int? tagGroupId;
+  int? userId;
 
   TagModel({
     required this.id,
