@@ -93,14 +93,16 @@ class _SetFormState extends State<SetForm> {
                           appBar: AppBar(
                             title: Text("Select Song")
                           ),
-                          body: Column(
-                            children: [
-                              if(songs.isNotEmpty)
-                                SelectProposedSong(ctl: widget.ctl,
-                                    returnSong: addSong,
-                                    songA: songs.last),
-                              SelectSong(ctl: widget.ctl, refreshCaller: addSong),
-                            ],
+                          body: SingleChildScrollView(
+                            child: Column(
+                              children: [
+                                if(songs.isNotEmpty)
+                                  SelectProposedSong(ctl: widget.ctl,
+                                      returnSong: addSong,
+                                      songA: songs.last),
+                                SelectSong(ctl: widget.ctl, refreshCaller: addSong),
+                              ],
+                            ),
                           ),
                         )
                     ));

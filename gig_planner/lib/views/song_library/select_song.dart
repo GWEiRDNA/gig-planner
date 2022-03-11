@@ -15,23 +15,51 @@ class SelectSong extends StatefulWidget {
 
 class _SelectSongState extends State<SelectSong> {
   late List<SongModel> songs;
+  String search = "";
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    songs = widget.ctl.getSongs("");
+  }
+
 
   @override
   Widget build(BuildContext context) {
-    songs = widget.ctl.user.songs;
-      return ListView.builder(
-          shrinkWrap: true,
-          itemCount: songs.length,
-          itemBuilder: (context, i){
-            return ListTile(
-              title: Text(songs[i].title),
-              onTap: (){
-                widget.ctl.selectSong(songs[i]);
-                widget.refreshCaller();
-                Navigator.pop(context);
-              },
-            );
-          }
+      return Column(
+        children: [
+          TextFormField(
+            decoration: InputDecoration(
+              hintText: 'Search',
+              suffixIcon: IconButton(
+                onPressed: (){
+                  songs = widget.ctl.getSongsLike(search);
+                  setState((){});
+                },
+                icon: Icon(Icons.search),
+              ),
+            ),
+            onChanged: (text){
+              search = text;
+            },
+          ),
+          ListView.builder(
+              primary: false,
+              shrinkWrap: true,
+              itemCount: songs.length,
+              itemBuilder: (context, i){
+                return ListTile(
+                  title: Text(songs[i].title),
+                  onTap: (){
+                    widget.ctl.selectSong(songs[i]);
+                    widget.refreshCaller();
+                    Navigator.pop(context);
+                  },
+                );
+              }
+          ),
+        ],
       );
   }
 }

@@ -272,4 +272,17 @@ class Controller{
   String? checkEventName(String? value) {}
 
   String? checkAuthorName(String? value) {}
+
+  List<SongModel> getSongs(String s) {
+    if(s == null){
+      return user.songs;
+    }else{
+      return user.songs;
+    }
+  }
+
+  List<SongModel> getSongsLike(String search) {
+    //TODO
+    return <SongModel>[];
+  }
 }
