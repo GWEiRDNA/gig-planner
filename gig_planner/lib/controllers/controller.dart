@@ -285,4 +285,8 @@ class Controller{
     //TODO
     return <SongModel>[];
   }
+
+  void createTransition(TransitionModel transition) {
+
+  }
 }
