@@ -8,11 +8,11 @@ class LoginController{
 
   LoginController(this.connection);
 
-  Future<UserModel?> login(String eMail, String password) async {
+  Future<UserModel> login(String eMail, String password) async {
     return await loginUser(connection, eMail, password);
   }
 
-  Future<UserModel?> register(String nick, String eMail, String password) async {
+  Future<UserModel> register(String nick, String eMail, String password) async {
     return await registerUser(connection, eMail, password, nick);
   }
 }

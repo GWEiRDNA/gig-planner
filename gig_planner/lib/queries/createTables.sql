@@ -147,9 +147,9 @@ ALTER TABLE tags ADD CONSTRAINT tags_pk PRIMARY KEY ( id );
 
 CREATE TABLE users (
     id       SERIAL NOT NULL,
-    email    VARCHAR(50) NOT NULL,
+    email    VARCHAR(50) NOT NULL UNIQUE,
     password CHAR(64) NOT NULL,
-    name     VARCHAR(30) NOT NULL
+    name     VARCHAR(30) NOT NULL UNIQUE
 );
 
 
@@ -287,6 +287,12 @@ ALTER TABLE users
 ADD CONSTRAINT name_length_check
 CHECK (
   LENGTH(name) >= 3
+);
+
+ALTER TABLE users
+ADD CONSTRAINT password_empty_check
+CHECK (
+  password <> '$5$v9SferVS2DklThF0$dxNhQ1MwIrsijf/TVaiCqX/COvl0dj2xp9ZZdURYLP3'
 );
 
 ALTER TABLE tags

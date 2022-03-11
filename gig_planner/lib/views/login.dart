@@ -70,25 +70,25 @@ class _LoginViewState extends State<LoginView> {
                 },
               ),
               ElevatedButton(onPressed: () async {
-                UserModel? user = await widget.logCtl.login(eMail, password);
-                if( user != null){
+                UserModel user = await widget.logCtl.login(eMail, password);
+                if( user.errorMsg == null){
                   Navigator.push(
                     context,
                     MaterialPageRoute(builder: (_) => MyApp(usr: user))
                   );
                 }else{
-                  showLoginDialog("Error");
+                  showLoginDialog(user.errorMsg!);
                 }
               }, child: const Text("Login")),
               ElevatedButton(onPressed: () async {
-                UserModel? user = await widget.logCtl.register(nick, eMail, password);
-                if( user != null){
+                UserModel user = await widget.logCtl.register(nick, eMail, password);
+                if( user.errorMsg == null){
                   Navigator.push(
                       context,
                       MaterialPageRoute(builder: (_) => MyApp(usr: user))
                   );
                 }else{
-                  showLoginDialog("Error");
+                  showLoginDialog(user.errorMsg!);
                 }
               }, child: const Text("Register")),
             ],

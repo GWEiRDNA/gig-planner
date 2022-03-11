@@ -4,6 +4,7 @@ import '../queries/myQueriesList.dart';
 import 'models.dart';
 
 class UserModel {
+  String? _errorMsg;
   int _id;
   String _eMail;
   String _nick;
@@ -16,11 +17,12 @@ class UserModel {
   List<PlaylistModel> _playlists = <PlaylistModel>[];
   List<AuthorModel> _authors = <AuthorModel>[];
   List<TransitionModel> _transitions = <TransitionModel>[];
-  UserModel(id, eMail, nick, connection)
+  UserModel(id, eMail, nick, connection, [String? errorMsg])
       : _id = id,
         _eMail = eMail,
         _nick = nick,
-        _connection = connection{
+        _connection = connection,
+        _errorMsg = errorMsg{
     _tags; // getMyTags();
     _songs; // = getMySongs();
     _playlists; //getMyPlaylists();
@@ -57,7 +59,7 @@ class UserModel {
     try {
       List<Map<String, Map<String, dynamic>>> results = await executeQuery(_connection, insertTagGroupsQuery, {'@userId': userId, '@name': name, '@color': color});
       if(results.isEmpty) {return false;}
-    } on Exception catch(e) {return false;}
+    } on Exception catch(e) {print(e);return false;}
     pullTagsGroups();
     return true;
   }
@@ -68,7 +70,7 @@ class UserModel {
       color ??= "#000000";
       List<Map<String, Map<String, dynamic>>> results = await executeQuery(_connection, updateTagGroupsQuery, {'@id': tagGroup.id, '@name': tagGroup.name, '@color': color});
       if(results.isEmpty) {return false;}
-    } on Exception catch(e) {return false;}
+    } on Exception catch(e) {print(e);return false;}
     pullTagsGroups();
     return true;
   }
@@ -77,7 +79,7 @@ class UserModel {
     try {
       List<Map<String, Map<String, dynamic>>> results = await executeQuery(_connection, deleteTagGroupsQuery, {'@id': tagGroupId});
       if(results.isEmpty) {return false;}
-    } on Exception catch(e) {return false;}
+    } on Exception catch(e) {print(e);return false;}
     pullTagsGroups();
     return true;
   }
@@ -97,7 +99,7 @@ class UserModel {
     try {
       List<Map<String, Map<String, dynamic>>> results = await executeQuery(_connection, insertTagQuery, {'@tagGroupsId': tagGroupId, '@userId': userId, '@name': name});
       if(results.isEmpty) {return false;}
-    } on Exception catch(e) {return false;}
+    } on Exception catch(e) {print(e);return false;}
     pullTags();
     return true;
   }
@@ -107,7 +109,7 @@ class UserModel {
     try {
       List<Map<String, Map<String, dynamic>>> results = await executeQuery(_connection, deleteTagQuery, {'@id': tagId, '@userId': userId});
       if(results.isEmpty) {return false;}
-    } on Exception catch(e) {return false;}
+    } on Exception catch(e) {print(e);return false;}
     pullTags();
     return true;
   }
@@ -127,7 +129,7 @@ class UserModel {
     try {
       List<Map<String, Map<String, dynamic>>> results = await executeQuery(_connection, insertAuthorQuery, {'@userId': userId, '@name': name});
       if(results.isEmpty) {return false;}
-    } on Exception catch(e) {return false;}
+    } on Exception catch(e) {print(e);return false;}
     pullAuthors();
     return true;
   }
@@ -137,7 +139,7 @@ class UserModel {
     try {
       List<Map<String, Map<String, dynamic>>> results = await executeQuery(_connection, updateAuthorQuery, {'@id': author.id, '@name': author.name, '@userId': userId});
       if(results.isEmpty) {return false;}
-    } on Exception catch(e) {return false;}
+    } on Exception catch(e) {print(e);return false;}
     pullAuthors();
     return true;
   }
@@ -147,7 +149,7 @@ class UserModel {
     try {
       List<Map<String, Map<String, dynamic>>> results = await executeQuery(_connection, deleteAuthorQuery, {'@id': authorsId, '@userId': userId});
       if(results.isEmpty) {return false;}
-    } on Exception catch(e) {return false;}
+    } on Exception catch(e) {print(e);return false;}
     pullAuthors();
     return true;
   }
@@ -273,7 +275,7 @@ class UserModel {
     try {
       List<Map<String, Map<String, dynamic>>> results = await executeQuery(_connection, deleteSongQuery, {'@id': songId});
       if(results.isEmpty) {return false;}
-    } on Exception catch(e) {return false;}
+    } on Exception catch(e) {print(e);return false;}
     pullSongs();
     return true;
   }
@@ -302,7 +304,7 @@ class UserModel {
     try {
       List<Map<String, Map<String, dynamic>>> results = await executeQuery(_connection, insertSetQuery, {'@userId': userId, '@name': name, '@color': color});
       if(results.isEmpty) {return false;}
-    } on Exception catch(e) {return false;}
+    } on Exception catch(e) {print(e);return false;}
     pullSets();
     return true;
   }
@@ -313,7 +315,7 @@ class UserModel {
       set.color ??= "#000000";
       List<Map<String, Map<String, dynamic>>> results = await executeQuery(_connection, updateSetQuery, {'@id': set.id, '@name': set.name, '@color': set.color});
       if(results.isEmpty) {return false;}
-    } on Exception catch(e) {return false;}
+    } on Exception catch(e) {print(e);return false;}
     pullSets();
     return true;
   }
@@ -322,7 +324,7 @@ class UserModel {
     try {
       List<Map<String, Map<String, dynamic>>> results = await executeQuery(_connection, deleteSetQuery, {'@id': setId});
       if(results.isEmpty) {return false;}
-    } on Exception catch(e) {return false;}
+    } on Exception catch(e) {print(e);return false;}
     pullSets();
     return true;
   }
@@ -331,7 +333,7 @@ class UserModel {
     try {
       List<Map<String, Map<String, dynamic>>> results = await executeQuery(_connection, insertSetElementQuery, {'@setId': setId, '@songId': songId});
       if(results.isEmpty) {return false;}
-    } on Exception catch(e) {return false;}
+    } on Exception catch(e) {print(e);return false;}
     pullSets();
     return true;
   }
@@ -340,7 +342,7 @@ class UserModel {
     try {
       List<Map<String, Map<String, dynamic>>> results = await executeQuery(_connection, deleteSetElementQuery, {'@setId': setId, '@songId': songId});
       if(results.isEmpty) {return false;}
-    } on Exception catch(e) {return false;}
+    } on Exception catch(e) {print(e);return false;}
     pullSets();
     return true;
   }
@@ -391,7 +393,7 @@ class UserModel {
     try {
       List<Map<String, Map<String, dynamic>>> results = await executeQuery(_connection, insertPlaylistElementQuery, {'@playlistId': playlistId, '@songId' : songId, '@setsId' : null, '@played': (played? 'true': 'false')});
       if(results.isEmpty) {return false;}
-    } on Exception catch(e) {return false;}
+    } on Exception catch(e) {print(e);return false;}
     pullPlaylists();
     return true;
   }
@@ -400,7 +402,7 @@ class UserModel {
     try {
       List<Map<String, Map<String, dynamic>>> results = await executeQuery(_connection, insertPlaylistElementQuery, {'@playlistId': playlistId, '@songId' : null, '@setsId' : setId, '@played': (played? 'true': 'false')});
       if(results.isEmpty) {return false;}
-    } on Exception catch(e) {return false;}
+    } on Exception catch(e) {print(e);return false;}
     pullPlaylists();
     return true;
   }
@@ -409,7 +411,7 @@ class UserModel {
     try {
       List<Map<String, Map<String, dynamic>>> results = await executeQuery(_connection, updatePlaylistSongQuery, {'@playlistId': playlistId, '@songId' : songId, '@played': (played? 'true': 'false')});
       if(results.isEmpty) {return false;}
-    } on Exception catch(e) {return false;}
+    } on Exception catch(e) {print(e);return false;}
     pullPlaylists();
     return true;
   }
@@ -418,7 +420,7 @@ class UserModel {
     try {
       List<Map<String, Map<String, dynamic>>> results = await executeQuery(_connection, updatePlaylistSetQuery, {'@playlistId': playlistId, '@setsId' : setId, '@played': (played? 'true': 'false')});
       if(results.isEmpty) {return false;}
-    } on Exception catch(e) {return false;}
+    } on Exception catch(e) {print(e);return false;}
     pullPlaylists();
     return true;
   }
@@ -427,7 +429,7 @@ class UserModel {
     try {
       List<Map<String, Map<String, dynamic>>> results = await executeQuery(_connection, deletePlaylistSongQuery, {'@playlistId': playlistId, '@songId': songId});
       if(results.isEmpty) {return false;}
-    } on Exception catch(e) {return false;}
+    } on Exception catch(e) {print(e);return false;}
     pullPlaylists();
     return true;
   }
@@ -436,7 +438,7 @@ class UserModel {
     try {
       List<Map<String, Map<String, dynamic>>> results = await executeQuery(_connection, deletePlaylistSetQuery, {'@playlistId': playlistId, '@setId': setId});
       if(results.isEmpty) {return false;}
-    } on Exception catch(e) {return false;}
+    } on Exception catch(e) {print(e);return false;}
     pullPlaylists();
     return true;
   }
@@ -481,7 +483,7 @@ class UserModel {
       if(results.isEmpty) {return false;}
       results = await executeQuery(_connection, insertPermissionsQuery, {'@userName' : userName, '@eventId' : eventId, '@permissionName' : "write"}); //add write
       if(results.isEmpty) {return false;}
-    } on Exception catch(e) {return false;}
+    } on Exception catch(e) {print(e);return false;}
     pullEvents();
     return true;
   }
@@ -490,7 +492,7 @@ class UserModel {
     try {
       List<Map<String, Map<String, dynamic>>> results = await executeQuery(_connection, updateEventQuery, {'@id': event.id, '@playListId' : (event.playlist == null)? null :event.playlist?.id, '@name' : event.name, '@startDate' : event.startDate, '@endDate' : event.endDate, '@description' : event.description});
       if(results.isEmpty) {return false;}
-    } on Exception catch(e) {return false;}
+    } on Exception catch(e) {print(e);return false;}
     pullEvents();
     return true;
   }
@@ -499,7 +501,7 @@ class UserModel {
     try {
       List<Map<String, Map<String, dynamic>>> results = await executeQuery(_connection, deleteEventQuery, {'@id': eventId});
       if(results.isEmpty) {return false;}
-    } on Exception catch(e) {return false;}
+    } on Exception catch(e) {print(e);return false;}
     pullEvents();
     return true;
   }
@@ -522,7 +524,7 @@ class UserModel {
     try {
       List<Map<String, Map<String, dynamic>>> results = await executeQuery(_connection, insertPermissionsQuery, {'@userName' : userName, '@eventId' : eventId, '@permissionName' : permissionName});
       if(results.isEmpty) {return false;}
-    } on Exception catch(e) {return false;}
+    } on Exception catch(e) {print(e);return false;}
     pullEvents();
     return true;
   }
@@ -532,7 +534,7 @@ class UserModel {
     try {
       List<Map<String, Map<String, dynamic>>> results = await executeQuery(_connection, deletePermissionsQuery, {'@userName' : userName, '@eventId' : eventId, '@permissionName' : permissionName});
       if(results.isEmpty) {return false;}
-    } on Exception catch(e) {return false;}
+    } on Exception catch(e) {print(e);return false;}
     pullEvents();
     return true;
   }
@@ -565,7 +567,7 @@ class UserModel {
     try {
       List<Map<String, Map<String, dynamic>>> results = await executeQuery(_connection, insertTransitionQuery, {'@perviousSongId' : perviousSongId, '@nextSongId' : nextSongId, '@power' : power, '@createdManualy' : (createdManualy)? 'True': 'False'});
       if(results.isEmpty) {return false;}
-    } on Exception catch(e) {return false;}
+    } on Exception catch(e) {print(e);return false;}
     pullTransitions();
     return true;
   }
@@ -574,7 +576,7 @@ class UserModel {
     try {
       List<Map<String, Map<String, dynamic>>> results = await executeQuery(_connection, updateTransitionQuery, {'@perviousSongId' : perviousSongId, '@nextSongId' : nextSongId, '@power' : power, '@createdManualy' : (createdManualy)? 'True': 'False'});
       if(results.isEmpty) {return false;}
-    } on Exception catch(e) {return false;}
+    } on Exception catch(e) {print(e);return false;}
     pullTransitions();
     return true;
   }
@@ -583,7 +585,7 @@ class UserModel {
     try {
       List<Map<String, Map<String, dynamic>>> results = await executeQuery(_connection, deleteTransitionQuery, {'@perviousSongId' : perviousSongId, '@nextSongId' : nextSongId});
       if(results.isEmpty) {return false;}
-    } on Exception catch(e) {return false;}
+    } on Exception catch(e) {print(e);return false;}
     pullTransitions();
     return true;
   }
@@ -607,4 +609,6 @@ class UserModel {
   String get eMail => _eMail;
 
   int get id => _id;
+
+  String? get errorMsg => _errorMsg;
 }
