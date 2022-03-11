@@ -35,6 +35,8 @@ class _CreateEventState extends State<CreateEvent> {
     }
   }
 
+  final _formKey = GlobalKey<FormState>();
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -42,6 +44,7 @@ class _CreateEventState extends State<CreateEvent> {
         title: Text("New Event")
       ),
       body: Form(
+        key: _formKey,
         child: Padding(
           padding: const EdgeInsets.all(8.0),
           child: Column(
@@ -53,7 +56,16 @@ class _CreateEventState extends State<CreateEvent> {
                 ),
                 onChanged: (text){
                   setState((){name=text;});
-                }
+                },
+                  validator: (value){
+                    //TODO
+                    String? s = widget.ctl.checkEventName(value);
+                    if(s != null){
+                      return s; //Print error
+                    }else{
+                      return null;
+                    }
+                  }
               ),
               TextFormField(
                 initialValue: startDate,
@@ -62,6 +74,15 @@ class _CreateEventState extends State<CreateEvent> {
                 ),
                   onChanged: (text){
                     setState((){startDate=text;});
+                  },
+                  validator: (value){
+                    //TODO
+                    String? s = widget.ctl.checkEventStartDate(value);
+                    if(s != null){
+                      return s; //Print error
+                    }else{
+                      return null;
+                    }
                   }
               ),
               TextFormField(
@@ -71,6 +92,15 @@ class _CreateEventState extends State<CreateEvent> {
                 ),
                   onChanged: (text){
                     setState((){endDate=text;});
+                  },
+                  validator: (value){
+                    //TODO
+                    String? s = widget.ctl.checkEventEndDate(value);
+                    if(s != null){
+                      return s; //Print error
+                    }else{
+                      return null;
+                    }
                   }
               ),
               TextFormField(
@@ -82,19 +112,36 @@ class _CreateEventState extends State<CreateEvent> {
                 ),
                   onChanged: (text){
                     setState((){description=text;});
+                  },
+
+                  validator: (value){
+                    //TODO
+                    String? s = widget.ctl.checkEventDescription(value);
+                    if(s != null){
+                      return s; //Print error
+                    }else{
+                      return null;
+                    }
                   }
               ),
               ElevatedButton(
-                  onPressed: (){
-                    EventModel updatedEv = EventModel(id: widget.ev!.id, name: name, permissions: widget.ev!.permissions, description: description, endDate: endDate, startDate: startDate);
-                    if(isUpdated) {
-                      widget.ctl.updateEvent(updatedEv);
+                  onPressed: () {
+                    if (_formKey.currentState!.validate()) {
+                      EventModel updatedEv = EventModel(id: widget.ev!.id,
+                          name: name,
+                          permissions: widget.ev!.permissions,
+                          description: description,
+                          endDate: endDate,
+                          startDate: startDate);
+                      if (isUpdated) {
+                        widget.ctl.updateEvent(updatedEv);
+                      }
+                      else {
+                        widget.ctl.addEvent(updatedEv);
+                      }
+                      setState(() {});
+                      Navigator.pop(context);
                     }
-                    else {
-                      widget.ctl.addEvent(updatedEv);
-                    }
-                    setState(() {});
-                    Navigator.pop(context);
                   },
                   child: const Icon(Icons.check),
               )

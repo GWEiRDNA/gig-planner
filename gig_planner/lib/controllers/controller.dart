@@ -244,4 +244,32 @@ class Controller{
   Future<bool> deleteAuthor(AuthorModel author) async {
     return await user.deleteAuthor(author.id);
   }
+
+  String? checkTagName(String? value) {}
+
+  String? checkTagGroupName(String? value) {}
+
+  String? checkSongLyrics(String? value) {}
+
+  String? checkSongDuration(String? value) {}
+
+  String? checkSongBpm(String? value) {}
+
+  String? checkSongAlbum(String? value) {}
+
+  String? checkSongTitle(String? value) {}
+
+  String? checkSetName(String? value) {}
+
+  String? checkNick(String? value) {}
+
+  String? checkEventDescription(String? value) {}
+
+  String? checkEventEndDate(String? value) {}
+
+  String? checkEventStartDate(String? value) {}
+
+  String? checkEventName(String? value) {}
+
+  String? checkAuthorName(String? value) {}
 }

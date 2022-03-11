@@ -20,6 +20,8 @@ class _AuthorsLibraryState extends State<AuthorsLibrary> {
     authors = widget.ctl.user.authors;
   }
 
+  final _formKey = GlobalKey<FormState>();
+
   void refresh() {
     setState(() {});
   }
@@ -40,7 +42,9 @@ class _AuthorsLibraryState extends State<AuthorsLibrary> {
                     suffixIcon: IconButton(
                       onPressed: () {
                         if (newAuthorName != "") {
-                          widget.ctl.crateAuthor(newAuthorName);
+                          if(_formKey.currentState!.validate()) {
+                            widget.ctl.crateAuthor(newAuthorName);
+                          }
                           setState(() {});
                         }
                       },
@@ -48,6 +52,15 @@ class _AuthorsLibraryState extends State<AuthorsLibrary> {
                     )),
                 onChanged: (text) {
                   newAuthorName = text;
+                },
+                validator: (value){
+                  //TODO
+                  String? s = widget.ctl.checkAuthorName(value);
+                  if(s != null){
+                    return s; //Print error
+                  }else{
+                    return null;
+                  }
                 },
               ),
               ListView.builder(

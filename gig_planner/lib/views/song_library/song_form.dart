@@ -51,6 +51,8 @@ class _SongFormState extends State<SongForm> {
     }
   }
 
+  final _formKey = GlobalKey<FormState>();
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -59,6 +61,7 @@ class _SongFormState extends State<SongForm> {
       ),
       body: SingleChildScrollView(
         child: Form(
+          key: _formKey,
           child: Padding(
             padding: const EdgeInsets.all(8.0),
             child: Column(
@@ -75,6 +78,15 @@ class _SongFormState extends State<SongForm> {
                   }
                   else {
                     title = text;
+                  }
+                },
+                validator: (value){
+                  //TODO
+                  String? s = widget.ctl.checkSongTitle(value);
+                  if(s != null){
+                    return s; //Print error
+                  }else{
+                    return null;
                   }
                 },
               ),
@@ -99,6 +111,15 @@ class _SongFormState extends State<SongForm> {
                   }
                   else {
                     album = text;
+                  }
+                },
+                validator: (value){
+                  //TODO
+                  String? s = widget.ctl.checkSongAlbum(value);
+                  if(s != null){
+                    return s; //Print error
+                  }else{
+                    return null;
                   }
                 },
               ),
@@ -139,6 +160,15 @@ class _SongFormState extends State<SongForm> {
                     bpm = double.parse(text);
                   }
                 },
+                validator: (value){
+                  //TODO
+                  String? s = widget.ctl.checkSongBpm(value);
+                  if(s != null){
+                    return s; //Print error
+                  }else{
+                    return null;
+                  }
+                },
               ),
               //Duration
               TextFormField(
@@ -152,6 +182,15 @@ class _SongFormState extends State<SongForm> {
                   } 
                   else {
                     duration = text;
+                  }
+                },
+                validator: (value){
+                  //TODO
+                  String? s = widget.ctl.checkSongDuration(value);
+                  if(s != null){
+                    return s; //Print error
+                  }else{
+                    return null;
                   }
                 },
               ),
@@ -169,14 +208,25 @@ class _SongFormState extends State<SongForm> {
                     released = int.parse(text);
                   }
                 },
+                validator: (value){
+                  //TODO
+                  String? s = widget.ctl.checkSongDuration(value);
+                  if(s != null){
+                    return s; //Print error
+                  }else{
+                    return null;
+                  }
+                },
               ),
               TagsView(ctl: widget.ctl, song: widget.song, selTags: selectedTags),
               ElevatedButton(
                   onPressed: () async {
+
                     List<AuthorModel> authors = [];
                     if(author != null) {
                       authors.add(author!);
                     }
+                    if(_formKey.currentState!.validate()){
                 final proposedSong = SongModel(
                   id: widget.song.id,
                   title: title,
@@ -196,7 +246,7 @@ class _SongFormState extends State<SongForm> {
                 if(!widget.isUpdated && await widget.ctl.addSong(proposedSong)) {
                   Navigator.pop(context);
                 }
-              }, child: const Icon(Icons.check)),
+              }}, child: const Icon(Icons.check)),
             ],
         ),
           )),

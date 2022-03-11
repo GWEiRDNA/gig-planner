@@ -34,66 +34,82 @@ class _SetFormState extends State<SetForm> {
     setState(() {});
   }
 
+  final _formKey = GlobalKey<FormState>();
+
   @override
   Widget build(BuildContext context) {
     songs = widget.updatedSet.songs;
     return Scaffold(
       appBar: AppBar(title: const Text("Edit Set")),
-      body: Column(
-        children: [
-          TextFormField(
-            initialValue: name,
-            decoration: InputDecoration(
-                hintText: "Set name",
-                suffixIcon: IconButton(onPressed: (){
-                  widget.ctl.updateSetName(widget.updatedSet, name);
-                }, icon: const Icon(Icons.check))
+      body: Form(
+        key: _formKey,
+        child: Column(
+          children: [
+            TextFormField(
+              initialValue: name,
+              decoration: InputDecoration(
+                  hintText: "Set name",
+                  suffixIcon: IconButton(onPressed: (){
+                    if (_formKey.currentState!.validate()) {
+                      widget.ctl.updateSetName(widget.updatedSet, name);
+                    }
+                  }, icon: const Icon(Icons.check))
+              ),
+              onChanged: (text) {
+                setState((){name = text;});
+              },
+                validator: (value){
+                  //TODO
+                  String? s = widget.ctl.checkSetName(value);
+                  if(s != null){
+                    return s; //Print error
+                  }else{
+                    return null;
+                  }
+                }
             ),
-            onChanged: (text) {
-              setState((){name = text;});
-            },
-          ),
-          ListView.builder(
-              shrinkWrap: true,
-              itemCount: songs.length,
-              itemBuilder: (_, i) {
-                return ListTile(
-                  title: Text(songs[i].title),
-                  trailing: IconButton(
-                      onPressed: () {
-                        widget.ctl
-                            .deleteSongFromSet(widget.updatedSet, songs[i]);
-                        setState(() {});
-                      },
-                      icon: const Icon(Icons.delete)),
-                );
-              }),
-          ListTile(
-            onTap: () {
-              Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                      builder: (_) =>
-                      Scaffold(
-                        appBar: AppBar(
-                          title: Text("Select Song")
-                        ),
-                        body: Column(
-                          children: [
-                            if(songs.isNotEmpty)
-                              SelectProposedSong(ctl: widget.ctl,
-                                  returnSong: addSong,
-                                  songA: songs.last),
-                            SelectSong(ctl: widget.ctl, refreshCaller: addSong),
-                          ],
-                        ),
-                      )
-                  ));
-            },
-            leading: Icon(Icons.add),
-            title: Text("Add New Song"),
-          )
-        ],
+            ListView.builder(
+                shrinkWrap: true,
+                itemCount: songs.length,
+                itemBuilder: (_, i) {
+                  return ListTile(
+                    title: Text(songs[i].title),
+                    trailing: IconButton(
+                        onPressed: () {
+                          widget.ctl
+                              .deleteSongFromSet(widget.updatedSet, songs[i]);
+                          setState(() {});
+                        },
+                        icon: const Icon(Icons.delete)),
+                  );
+                }),
+            ListTile(
+              onTap: () {
+                Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (_) =>
+                        Scaffold(
+                          appBar: AppBar(
+                            title: Text("Select Song")
+                          ),
+                          body: Column(
+                            children: [
+                              if(songs.isNotEmpty)
+                                SelectProposedSong(ctl: widget.ctl,
+                                    returnSong: addSong,
+                                    songA: songs.last),
+                              SelectSong(ctl: widget.ctl, refreshCaller: addSong),
+                            ],
+                          ),
+                        )
+                    ));
+              },
+              leading: Icon(Icons.add),
+              title: Text("Add New Song"),
+            )
+          ],
+        ),
       ),
     );
   }

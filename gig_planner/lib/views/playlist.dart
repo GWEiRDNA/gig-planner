@@ -31,6 +31,9 @@ class _PlaylistState extends State<Playlist> {
   late List<String> eMails;
   String newMail = "";
 
+  final _formKey = GlobalKey<FormState>();
+
+
   @override
   initState() {
     super.initState();
@@ -65,43 +68,57 @@ class _PlaylistState extends State<Playlist> {
     newMail = "";
     return Scaffold(
       endDrawer: Drawer(
-        child: ListView.builder(
-          itemCount: eMails.length + 1,
-          itemBuilder: (context, i) {
-            if (i < eMails.length) {
-              return ListTile(
-                title: Text(eMails[i]),
-                trailing: IconButton(
-                  icon: const Icon(Icons.delete),
-                  onPressed: () {
-                    widget.ctl.unshareEvent(widget.curEvent, eMails[i]);
-                    setState(() {});
-                  },
-                ),
-              );
-            } else {
-              return TextFormField(
-                decoration: InputDecoration(
-                  hintText: "To add user write his name",
-                  suffixIcon: IconButton(
-                    onPressed: () async {
-                      if (await widget.ctl.shareEventToUser(widget.curEvent, newMail)) {
-                        setState(() {});
-                      } else {
-                        showDialog(
-                            context: context,
-                            builder: (_) => const AlertDialog(title: Text("Wrong user name.")));
-                      }
+        child: Form(
+          key: _formKey,
+          child: ListView.builder(
+            itemCount: eMails.length + 1,
+            itemBuilder: (context, i) {
+              if (i < eMails.length) {
+                return ListTile(
+                  title: Text(eMails[i]),
+                  trailing: IconButton(
+                    icon: const Icon(Icons.delete),
+                    onPressed: () {
+                      widget.ctl.unshareEvent(widget.curEvent, eMails[i]);
+                      setState(() {});
                     },
-                    icon: const Icon(Icons.add),
                   ),
-                ),
-                onChanged: (text) {
-                  newMail = text;
-                },
-              );
-            }
-          },
+                );
+              } else {
+                return TextFormField(
+                  decoration: InputDecoration(
+                    hintText: "To add user write his name",
+                    suffixIcon: IconButton(
+                      onPressed: () async {
+                        if (_formKey.currentState!.validate()) {
+                          if (await widget.ctl.shareEventToUser(widget.curEvent, newMail)) {
+                          setState(() {});
+                        } else {
+                          showDialog(
+                              context: context,
+                              builder: (_) => const AlertDialog(title: Text("Wrong user name.")));
+                        }
+                      }
+                        },
+                      icon: const Icon(Icons.add),
+                    ),
+                  ),
+                  onChanged: (text) {
+                    newMail = text;
+                  },
+                    validator: (value){
+                      //TODO
+                      String? s = widget.ctl.checkNick(value);
+                      if(s != null){
+                        return s; //Print error
+                      }else{
+                        return null;
+                      }
+                    }
+                );
+              }
+            },
+          ),
         ),
       ),
       appBar: AppBar(

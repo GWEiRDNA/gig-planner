@@ -32,22 +32,38 @@ class _SongLyricsEditState extends State<SongLyricsEdit> {
     lyrics = widget.song.lyrics ?? "";
   }
 
+  final _formKey = GlobalKey<FormState>();
+
   @override
   Widget build(BuildContext context) {
-    return Column(
-      children: [
-        TextFormField(
-          initialValue: lyrics,
-          minLines: 8,
-          maxLines: 8,
-          onChanged: (text){
-            lyrics = text;
-          },
-        ),
-        ElevatedButton(onPressed: (){
-          widget.ctl.updateLyrics(widget.song, lyrics);
-        }, child: const Text("Accept changes"))
-      ],
+    return Form(
+      key: _formKey,
+      child: Column(
+        children: [
+          TextFormField(
+            initialValue: lyrics,
+            minLines: 8,
+            maxLines: 8,
+            onChanged: (text){
+              lyrics = text;
+            },
+            validator: (value){
+              //TODO
+              String? s = widget.ctl.checkSongLyrics(value);
+              if(s != null){
+                return s; //Print error
+              }else{
+                return null;
+              }
+            },
+          ),
+          ElevatedButton(onPressed: (){
+            if(_formKey.currentState!.validate()){
+              widget.ctl.updateLyrics(widget.song, lyrics);
+            }
+          }, child: const Text("Accept changes"))
+        ],
+      ),
     );
   }
 }

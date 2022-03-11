@@ -11,7 +11,7 @@ import 'databaseOperations.dart';
 late PostgreSQLConnection connection;
 
 Future<void> main() async {
-  ConnectionParameters connectionParameters = ConnectionParameters("10.0.2.2", 5432, "gigplanner", "appuser", "appuser");
+  ConnectionParameters connectionParameters = ConnectionParameters("10.0.2.2", 5432, "gigplanner", "postgres", "password");
   connection = await connectToDatabase(connectionParameters);
   LoginController con = LoginController(connection);
 

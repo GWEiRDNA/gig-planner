@@ -37,10 +37,8 @@ class _TagsState extends State<Tags> {
       floatingActionButton: FloatingActionButton(
         child: const Icon(Icons.add),
         onPressed: () {
-          Navigator.push(
-            context,
-            MaterialPageRoute(builder: (_) => TagGroupForm(ctl: widget.ctl))
-          );
+          Navigator.push(context,
+              MaterialPageRoute(builder: (_) => TagGroupForm(ctl: widget.ctl)));
         },
         backgroundColor: Colors.blue,
       ),
@@ -62,8 +60,7 @@ class TagGroup extends StatefulWidget {
       }
     }
   }
-  TagGroup.specific(
-      {required this.ctl, required this.tagGroup, Key? key})
+  TagGroup.specific({required this.ctl, required this.tagGroup, Key? key})
       : title = tagGroup!.name,
         super(key: key) {
     for (TagModel tag in ctl.user.tags) {
@@ -80,60 +77,81 @@ class TagGroup extends StatefulWidget {
 class _TagGroupState extends State<TagGroup> {
   String newTagName = "";
 
+  final _formKey = GlobalKey<FormState>();
+
   @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.all(8.0),
-      child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-        ListTile(
-          title: Text(widget.title),
-          trailing: ((){
-            if(widget.tagGroup != null){
-              return IconButton(onPressed: () {
-                widget.ctl.deleteTagGroup(widget.tagGroup as TagGroupModel);
-              }, icon: const Icon(Icons.delete));
-            }
-          }()),
-          leading:
-          ((){
-            if(widget.tagGroup != null){
-              return IconButton(onPressed: () {
-                Navigator.push(
-                    context,
-                    MaterialPageRoute(builder: (_) => TagGroupForm.edit(ctl: widget.ctl, tagGroup: widget.tagGroup))
-                );
-              },
-                  icon: const Icon(Icons.edit));
-            }
-          }())
-        ),
-        ListTile(
-          title: TextFormField(
-            decoration: const InputDecoration(hintText: "Add new tag"),
-            onChanged: (input){
-              setState(() {
-                newTagName = input;
-              });
-            },
+    return Form(
+      key: _formKey,
+      child: Padding(
+        padding: const EdgeInsets.all(8.0),
+        child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+          ListTile(
+              title: Text(widget.title),
+              trailing: (() {
+                if (widget.tagGroup != null) {
+                  return IconButton(
+                      onPressed: () {
+                        widget.ctl
+                            .deleteTagGroup(widget.tagGroup as TagGroupModel);
+                      },
+                      icon: const Icon(Icons.delete));
+                }
+              }()),
+              leading: (() {
+                if (widget.tagGroup != null) {
+                  return IconButton(
+                      onPressed: () {
+                        Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (_) => TagGroupForm.edit(
+                                    ctl: widget.ctl,
+                                    tagGroup: widget.tagGroup)));
+                      },
+                      icon: const Icon(Icons.edit));
+                }
+              }())),
+          ListTile(
+            title: TextFormField(
+                decoration: const InputDecoration(hintText: "Add new tag"),
+                onChanged: (input) {
+                  setState(() {
+                    newTagName = input;
+                  });
+                },
+                validator: (value) {
+                  //TODO
+                  String? s = widget.ctl.checkTagName(value);
+                  if (s != null) {
+                    return s; //Print error
+                  } else {
+                    return null;
+                  }
+                }),
+            trailing: IconButton(
+                onPressed: () {
+                  if (_formKey.currentState!.validate()) {
+                    if (widget.tagGroup != null) {
+                      widget.ctl.createNewTag(newTagName, widget.tagGroup!.id);
+                    } else {
+                      widget.ctl.createNewTag(newTagName, null);
+                    }
+                    setState(() {});
+                  }
+                },
+                icon: const Icon(Icons.add)),
           ),
-          trailing:
-          IconButton(onPressed: () {
-            if(widget.tagGroup != null){
-              widget.ctl.createNewTag(newTagName, widget.tagGroup!.id);
-            }else{
-              widget.ctl.createNewTag(newTagName, null);
-            }
-            setState((){});
-          }, icon: const Icon(Icons.add)),
-        ),
-        if(widget.tags.isNotEmpty)
-        Wrap(
-          spacing: 5,
-          children: [
-            for (TagModel tag in widget.tags) Tag(ctl: widget.ctl, tag: tag),
-          ],
-        )
-      ]),
+          if (widget.tags.isNotEmpty)
+            Wrap(
+              spacing: 5,
+              children: [
+                for (TagModel tag in widget.tags)
+                  Tag(ctl: widget.ctl, tag: tag),
+              ],
+            )
+        ]),
+      ),
     );
   }
 }
